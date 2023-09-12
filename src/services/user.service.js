@@ -3,7 +3,7 @@ import authHeader from './auth-header'
 
 import { URL } from './URL_SERVICIOS'
 
-const API_URL = URL.ZOEITAPI + '/api/'
+const API_URL = URL.URL_API + '/api/'
 
 class UserService {
   obtenerPersona (usuario) {

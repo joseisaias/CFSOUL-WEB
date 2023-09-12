@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { URL } from './URL_SERVICIOS'
 
-const API_URL = URL.ZOEITAPI + '/api/login/'
+const API_URL = URL.URL_API + '/api/login/'
 
 class AuthService {
   login (user) {
