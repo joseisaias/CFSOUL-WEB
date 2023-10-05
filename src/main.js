@@ -3,12 +3,14 @@ import Vue from 'vue'
 import vuetify from '@/plugins/vuetify'
 import App from './App.vue'
 import { router } from './router'
-import store from './store'
+import store from './store';
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import BootstrapVue from 'bootstrap-vue'
 import VeeValidate from 'vee-validate'
 import Vuex from 'vuex'
+import axios from 'axios';
+import VueAxios from 'vue-axios';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
@@ -24,7 +26,7 @@ import VueMyToasts from 'vue-my-toasts'
 import 'vue-my-toasts/dist/vue-my-toasts.css'
 import BootstrapComponent from 'vue-my-toasts/src/components/toasts/BootstrapComponent'
 import Carousel3d from 'vue-carousel-3d';
-import * as VueGoogleMaps from 'vue2-google-maps'
+import 'animate.css';
 
 library.add(faHome, faUser, faUsers, faUserPlus, faSignInAlt, faSignOutAlt)
 
@@ -34,6 +36,7 @@ Vue.use(VeeValidate)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(Vuex)
+Vue.use(VueAxios, axios);
 Vue.use(Carousel3d);
 
 Vue.use(VueConfirmDialog)
@@ -58,12 +61,52 @@ Vue.filter('capitalize', function (value) {
 
 Vue.filter('currency', function (value) {
   const val = (value / 1).toFixed(2).replace(',', '.')
-  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return "$" + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 })
+
+Vue.filter('currencyredondeo', function(value) {
+  if (!value) {
+      return "$0.0";
+  }
+
+  let val = (value / 1).toFixed(0).replace(',', '.');
+  var lastDigit = val.toString().slice(-1);
+  let cambioACero = val - parseInt(lastDigit);
+  return "$" + cambioACero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+});
 
 Vue.prototype.$ROL =
 {
   ROLE_ADMIN:'ROLE_ADMIN',
+};
+
+Vue.prototype.$EST_US =
+{
+  EST_US_ACTIVO:'EST_US_ACTIVO',
+  EST_US_NUEVO:'EST_US_NUEVO',
+  EST_US_INACTIVO:'EST_US_INACTIVO',
+  EST_US_BLOQUEADO:'EST_US_BLOQUEADO',
+};
+
+Vue.prototype.$CAT_MAES =
+{
+  EST_US: 'EST_US',
+  TIP_SOC: 'TIP_SOC',
+  TIP_ACT: 'TIP_ACT',
+  TIP_PER: 'TIP_PER',
+  TIP_ESTAB: 'TIP_ESTAB',
+  TIP_GIRO: 'TIP_GIRO',
+};
+
+Vue.prototype.$CAT_DET =
+{
+  TIP_DOM_FIS: 'TIP_DOM_FIS',
+  TIP_DOM_COM: 'TIP_DOM_COM',
+  VAR_CREDITO_MONTO_MIN: 'VAR_CREDITO_MONTO_MIN',
+  VAR_CREDITO_STEP_MONTO: 'VAR_CREDITO_STEP_MONTO',
+  VAR_CREDITO_MIN_PERIODO: 'VAR_CREDITO_MIN_PERIODO',
+  VAR_CREDITO_MAX_PERIODO: 'VAR_CREDITO_MAX_PERIODO',
+  VAR_CREDITO_INTERESES: 'VAR_CREDITO_INTERESES'
 };
 
 new Vue({

@@ -6,6 +6,14 @@ import { URL } from './URL_SERVICIOS'
 const API_URL = URL.URL_API + '/api/'
 
 class UserService {
+  recuperacontrasenia (mailDto) {
+    return axios.post(API_URL + 'email/recuperacontrasenia', mailDto)
+  }
+
+  actualizaContrasenia (usuario) {
+    return axios.post(API_URL + 'login/actualizaContrasenia', usuario)
+  }
+
   obtenerPersona (usuario) {
     return axios.post(API_URL + 'persona/obtenerPersona', { idUsuario: usuario.id }, { headers: authHeader() })
   }

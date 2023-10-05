@@ -116,9 +116,9 @@ export default {
 
       validacionGeneral: [value => !!value || 'El campo es requerido.'],
       rfc: [v => !!v || 'El campo es requerido.', v => /^([A-Za-zÑñ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Za-z\d]{2})([A\d])$/.test(v) || 'El RFC es invalido'],
-      userRules: [v => !!v || 'Usuario es requerido', v => /.+@.+\..+/.test(v) || 'el usuario no corresponde a un correo electronico'],
+      userRules: [v => !!v || 'Usuario es requerido', v => /.+@.+\..+/.test(v) || 'el usuario no corresponde a un correo electrónico'],
 
-      correo: [v => !!v || 'El campo es requerido.', v => /.+@.+\..+/.test(v) || 'El campo no corresponde a un correo electronico'],
+      correo: [v => !!v || 'El campo es requerido.', v => /.+@.+\..+/.test(v) || 'El campo no corresponde a un correo electrónico'],
       cpRule: [v => !!v || 'El campo es requerido.', v => Number(v) || 'El campo es numérico', v => (v && v.length === 5) || 'El campo debe tener 5 digitos.'],
       telefonoRule: [v => !!v || 'El campo es requerido.', v => Number(v) || 'El campo es numérico', v => (v && v.length === 10) || 'El campo debe tener 10 digitos.'],
       numExtRule: [v => !!v || 'El campo es requerido.', v => (v && v.length <= 25) || 'El campo de tener como máximo 25 caracteres.']
