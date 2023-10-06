@@ -317,3 +317,7 @@ export default {
   padding: 0 !important;
 }
 </style>
+<style>
+.theme--light.v-data-table.v-data-table--fixed-header thead th{
+  background: rgb(26, 58, 103) !important;
+}</style>
