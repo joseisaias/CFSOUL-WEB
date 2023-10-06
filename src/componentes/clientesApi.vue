@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card height="80vh">
+    <v-card >
       <div class="ml-2 mr-2">
         <v-card-title>
           Cliente

@@ -1,15 +1,12 @@
 <template>
 <div class="menu">
-    <v-navigation-drawer v-model="drawer"  permanent color="rgb(26 58 103)" dark>
+    <v-navigation-drawer v-model="drawer" permanent color="rgb(26 58 103)" dark :style="'min-height: 100 hv;'+'max-height: ' + (maxHeight-100) + 'px'">
         <v-list-item class="px-2">
             <v-list-item-avatar>
                 <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
             </v-list-item-avatar>
 
             <v-list-item-title>{{ currentUser.persona.nombre }}</v-list-item-title>
-            <!--v-btn icon @click.stop="mini = !mini">
-                    <v-icon>mdi-chevron-left</v-icon>
-                </v-btn-->
         </v-list-item>
         <v-list-item  style="margin-top: -30px; margin-left: 50px;">
                 <v-list-item-content>
@@ -86,6 +83,9 @@ const jQuery = require('jquery');
 
 export default {
   name:'menuUsuario',
+  props: {
+    maxHeight:Number
+  },
     computed: {
         currentUser() {
             const user = this.$store.state.auth.user
@@ -128,8 +128,7 @@ export default {
 }
 
 .v-list-item {
-    margin-bottom: 15px;
-
+    margin-bottom: 10px;
 }
 
 .itemList.v-list-item{
@@ -148,8 +147,9 @@ export default {
 
 .menu {
     min-width: 60px;
-    max-width: 238px;
+    max-width: 200px;
     float: left;
+    background: rgb(26,58,103);
 }
 
 .v-divider {

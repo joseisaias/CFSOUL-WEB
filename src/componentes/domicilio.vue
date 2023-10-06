@@ -58,21 +58,20 @@ export default {
   },
   methods: {
     buscarDomicilio() {
-      this.entidadFederativa = '';
-      this.municipio = '';
+      this.entidadFederativa = ''
+      this.municipio = ''
       let cp = this.cp
       if(cp != undefined && cp!= null && cp.length > 4 ){
-        CatGeneralService.getCatDomicilioByCp(this.cp).then(resp => {
-          this.entidadFederativa = resp.data.body[0].estado;
-          this.municipio = resp.data.body[0].municipio;
-          this.domicilio.idCatDomicilio = resp.data.body[0].idCatDomicilio;
-          this.$forceUpdate();
+        CatGeneralService.getCatDomicilioByCp(cp).then(resp => {
+          if(resp.data.body.length > 0) {
+            this.entidadFederativa = resp.data.body[0].estado;
+            this.municipio = resp.data.body[0].municipio;
+            this.domicilio.idCatDomicilio = resp.data.body[0].idCatDomicilio;
+            this.$forceUpdate();
+          }
         }).catch(error => {
-          this.$toasts.push({
-            type: 'error',
-            message: 'No se encontro el Codigo Postal.'
-          })
-          console.error("Ocurrio un error al buscar el codigo postal",error)
+          this.$toasts.push({ type: 'error', message: 'No se encontro el Codigo Postal.' })
+          console.error("Ocurrio un error al buscar el codigo postal", error)
         });
       }
     },

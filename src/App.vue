@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app data-app>
+    <v-app data-app style="width: 100%;">
       <router-view name="default" />
       <vue-confirm-dialog></vue-confirm-dialog>
       <v-dialog v-model="cargando" persistent width="300">
@@ -108,5 +108,8 @@ th,
   height: 1px;
     border-bottom: 1px solid;
     border-bottom-color: rgb(26 58 103 / 15%);
+}
+.v-application--wrap{
+  height: auto !important;
 }
 </style>

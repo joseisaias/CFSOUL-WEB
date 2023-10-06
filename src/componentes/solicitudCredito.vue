@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-card height="80vh" v-if="!tablaAmortizacionDialog">
+    <v-card v-if="!tablaAmortizacionDialog">
       <div class="ml-2 mr-2">
         <v-card-title tag="div" style="padding-bottom: 50px;">
           Solicitud de credito
           <v-spacer></v-spacer>
         </v-card-title>
         <v-row>
-          <v-col xs="5" sm="5" md="5" lg="4" xl="5">
+          <v-col xs="5" sm="5" md="5" lg="5" xl="5">
             <v-form ref="form">
               <v-row>
                 <v-col offset="1" cols="10">
@@ -51,7 +51,7 @@
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
           </v-col>
-          <v-col xs="6" sm="6" md="6" lg="4" xl="6" style="margin-top: -110px;">
+          <v-col xs="6" sm="6" md="6" lg="6" xl="6" style="margin-top: -110px;">
             <div class="v-card__title" style="padding-bottom: 50px;">
               Tabla de amortización
             </div>
@@ -78,27 +78,17 @@
 
       </div>
       <v-card-actions style="padding: 30px;">
-        <v-btn dark color="primary">SOLICITAR CRÉDITO</v-btn>
+        <v-btn dark color="primary" @click="guardarSolicitud()">SOLICITAR CRÉDITO</v-btn>
         <v-btn dark color="red" @click="limpiarCotizacion()">Limpiar</v-btn>
       </v-card-actions>
     </v-card>
     <span style="display: none;">{{ cambiaValorMonto }}</span>
-    <!--div>
-      <v-row>
-        <v-col lg="2"> Pago Capital</v-col>
-        <v-col lg="2">Pago Interes</v-col>
-        <v-col lg="2">Capital Restante</v-col>
-      </v-row>
-      <v-row v-for="(item, id) in calendario" :key="id">
-        <v-col lg="2"> {{ item.totalDias }}</v-col>
-        <v-col lg="2">{{ item.fecha }}</v-col>
-      </v-row>
-    </div-->
   </div>
 </template>
 <script>
 /* eslint-disable */
 import CatGeneralService from '@/services/catGeneral.service'
+import SolicitudService from '@/services/solicitud.service'
 export default {
   components: {
   },
@@ -122,6 +112,9 @@ export default {
       minPeriodo: 6,
       maxPeriodo: 24,
       calendario: [],
+      idEstatusPorPagar:0,
+      idTipoPagoQuincenal:0,
+      idEstatusAdeudo:0,
       headerAmortizacion: [{
         text: '# Pago',
         align: 'start',
@@ -202,7 +195,8 @@ export default {
           pagoCapital: pagoCapital,
           pagoInteres: interes,
           saldoFinal: capitalRestanteFin,
-          saldoInicial: capitalRestante
+          saldoInicial: capitalRestante,
+          idEstatusPago: this.idEstatusPorPagar
         }
         obj.pagoTotal = obj.pagoCapital + obj.pagoInteres
         tbl.push(obj)
@@ -261,6 +255,39 @@ export default {
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_AUX).then(resp => {
         this.valorAux = resp.data.body[0].descripcion
       }).catch()
+
+
+      CatGeneralService.getCatDetalleByClave(this.$CAT_DET.ESTATUS_POR_PAGAR).then(resp => {
+        this.idEstatusPorPagar = resp.data.body[0].idCatDetalle
+      }).catch()
+      CatGeneralService.getCatDetalleByClave(this.$CAT_DET.ESTATUS_ADEUDO).then(resp => {
+        this.idEstatusAdeudo = resp.data.body[0].idCatDetalle
+      }).catch()
+      CatGeneralService.getCatDetalleByClave(this.$CAT_DET.TIPO_PAGO_QUINCENAL).then(resp => {
+        this.idTipoPagoQuincenal = resp.data.body[0].idCatDetalle
+      }).catch()
+    },
+    guardarSolicitud() {
+      var solicitudRequest = {
+        tablaAmortizacion: this.tablaAmortizacion,
+        credito:{
+          idEmpleado: this.currentUser.id,
+          idEstatusCredito: this.idEstatusAdeudo,
+          idTipoPago: this.idTipoPagoQuincenal,
+          numPagos: this.periodo,
+          montoSolicitado: this.monto,
+          intereses: this.interes,
+          pagoTotal: this.pagoTotal
+        }
+      }
+      SolicitudService.guardarSolicitud(solicitudRequest).then(resp => {
+        this.$toasts.push({ type: 'info', message: 'Registro guardado.' })
+      }).catch(
+        error => {
+          this.$toasts.push({ type: 'error', message: 'Ocurrio un error.' })
+          console.log('Ocurrio un error al guardar la solicitud', error)
+        }
+      );
     },
     obtenerTablaCalendario () {
       const fechaActual = new Date()

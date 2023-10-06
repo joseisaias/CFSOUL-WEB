@@ -1,18 +1,18 @@
 <template>
   <div id="home">
-    <div class="head row" style="height: 150px; padding-left: 15px; padding-top: 15px;background: rgb(26 58 103)">
+    <div class="head row"  style="height: 100px; padding-left: 40px; padding-top: 5px;background: rgb(26 58 103)">
       <div class="col-2">
-        <img src="https://portal.cfsoul.com/images/icono_amarillo.png" width="100px">
+        <img src="https://portal.cfsoul.com/images/icono_amarillo.png" height="80px">
       </div>
       <div class="col-10" style="padding-top: 50px;">
         <center>
-          <span style="color: white; font-size: 38px;">CAPITAL & FINANCIAL SOUL</span>
+          <span style="color: white; font-size: 38px;">CAPITAL & FINANCIAL SOUL {{ maxHeight }}</span>
         </center>
       </div>
     </div>
-    <div class="row" style="height: calc(100vh - 150px);">
-      <menuUsuario @selectMenu="selectMenu = $event; subSelect = ''"></menuUsuario>
-      <div class="col-5 col-sm-7 col-md-8 col-lg-9 col-xl-10">
+    <div class="row" :style="{ height: maxHeight - 100 + 'px' }">
+      <menuUsuario :maxHeight="maxHeight" @selectMenu="selectMenu = $event; subSelect = ''"></menuUsuario>
+      <div id="content" class="col-5 col-sm-7 col-md-8 col-lg-9 col-xl-10">
         <v-card>
           <clientesApi v-if="selectMenu == 'cliente' && subSelect == ''" @subSelect="subSelectCliente($event)">
           </clientesApi>
@@ -50,7 +50,8 @@ export default {
     return {
       selectMenu: 'home',
       subSelect: '',
-      idCliente: null
+      idCliente: null,
+      maxHeight: document.documentElement.clientHeight
     }
   },
   mounted() {
@@ -59,6 +60,11 @@ export default {
     }
     if (this.$route.params.menu !== undefined) {
       this.selectMenu = this.$route.params.menu
+    }
+    window.onresize = () => {
+      this.maxHeight = document.getElementById('content').clientHeight
+      //document.documentElement.clientHeight;
+            //this.autoResize();
     }
   },
   methods: {
