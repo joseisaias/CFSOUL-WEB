@@ -220,11 +220,9 @@ export default {
   },
   methods: {
     limpiarCotizacion () {
-      alert(this.periodo)
-      this.periodo = 100000
       this.$confirm(
         {
-          message: '¿Está seguro de limpiar el formulario?' + this.periodo,
+          message: '¿Está seguro de limpiar el formulario?',
           button: { no: 'No', yes: 'Sí' },
           callback: confirm => { if (confirm) { this.$refs.form.reset() } }
         }
