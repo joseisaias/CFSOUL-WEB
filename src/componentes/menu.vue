@@ -31,7 +31,7 @@
                     <v-icon>mdi mdi-currency-usd</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                    <v-list-item-title>Solicitud credito</v-list-item-title>
+                    <v-list-item-title>Solicitud crédito</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item class="itemList" v-bind:class="[itemActive == 'cliente' ? 'itemSelect':'']" @click.prevent="selectMenu('cliente')">
