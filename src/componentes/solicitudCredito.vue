@@ -3,7 +3,7 @@
     <v-card v-if="!tablaAmortizacionDialog">
       <div class="ml-2 mr-2">
         <v-card-title tag="div" style="padding-bottom: 50px;">
-          Solicitud de credito
+          Solicitud de crédito
           <v-spacer></v-spacer>
         </v-card-title>
         <v-row>
@@ -29,7 +29,7 @@
               </v-row>
             </v-form>
             <v-row>
-              <v-col offset="1" cols="4"> Prestamo </v-col>
+              <v-col offset="1" cols="4"> Préstamo </v-col>
               <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ monto | currencyredondeo }}</span>
               </v-col>
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
@@ -134,7 +134,7 @@ export default {
         value: 'pagoTotal'
       },
       {
-        text: 'Interes',
+        text: 'Interés',
         align: 'center',
         sortable: false,
         value: 'pagoInteres'

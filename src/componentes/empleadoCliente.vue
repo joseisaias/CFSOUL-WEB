@@ -100,7 +100,7 @@
                     @keyUpNumberTotal="calcularMontoSalarioPrestamo()" ></VuetifyMoney>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <VuetifyMoney v-model="empleado.montoMaximoPrestamo" label="Monto salario prestamo" v-bind:disabled="true"
+                  <VuetifyMoney v-model="empleado.montoMaximoPrestamo" label="Monto salario préstamo" v-bind:disabled="true"
                     v-bind:valueWhenIsEmpty="valueWhenIsEmpty" v-bind:options="options"
                     :rules="montoRule"></VuetifyMoney>
                 </v-col>
@@ -200,11 +200,11 @@ export default {
         value: 'telefono'
       },
       {
-        text: 'Creditos activos',
+        text: 'Créditos activos',
         value: 'totalCredito'
       },
       {
-        text: 'Monto creditos activos',
+        text: 'Monto créditos activos',
         value: 'montoTotalPrestamo'
       },
       {
