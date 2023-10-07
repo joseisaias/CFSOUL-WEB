@@ -90,3 +90,9 @@ See [ EXAPLE ](https://parzibyte.me/blog/2021/06/27/selector-color-vue-color-pic
 ### google
 See [ Documentacion ](https://www.npmjs.com/package/@googlemaps/js-api-loader)
 https://es.vuejs.org/v2/cookbook/practical-use-of-scoped-slots.html
+
+
+
+npm install xlsx
+
+https://www.npmjs.com/package/xlsx

@@ -44,7 +44,7 @@ export default {
       municipio:'',
       entidadFederativa:'',
       isRequeridoRule: [v => !!v || 'El campo es requerido.'],
-      cpRule: [v => !!v || 'El campo es requerido.', v => Number(v) > 0 || 'El campo es numérico', v => (v && v.length == 5) || 'El campo debe tener 5 digitos.'+v.length],
+      cpRule: [v => !!v || 'El campo es requerido.', v => Number(v) > 0 || 'El campo es numérico', v => (v && v.length == 5) || 'El campo debe tener 5 digitos.'],
     }
   },
   computed: {
@@ -60,7 +60,7 @@ export default {
     buscarDomicilio() {
       this.entidadFederativa = ''
       this.municipio = ''
-      let cp = this.cp
+      let cp = this.cp + ''
       if(cp != undefined && cp!= null && cp.length > 4 ){
         CatGeneralService.getCatDomicilioByCp(cp).then(resp => {
           if(resp.data.body.length > 0) {

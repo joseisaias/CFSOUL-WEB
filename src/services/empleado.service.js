@@ -10,6 +10,10 @@ class EmpleadoService {
     return axios.post(API_URL + 'saveEmpleado', item, { headers: authHeader() })
   }
 
+  guardarEmpleadosExcel (items) {
+    return axios.post(API_URL + 'guardarEmpleadosExcel', items, { headers: authHeader() })
+  }
+
   activaInactivaEmpleado (idEmpleado) {
     return axios.get(API_URL + idEmpleado + '/activaInactivaEmpleado', { headers: authHeader() })
   }

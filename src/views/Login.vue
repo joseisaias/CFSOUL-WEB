@@ -117,6 +117,7 @@ export default {
       if (validacion) {
         this.loading = true;
         if (this.user.username && this.user.password) {
+          this.user.username = this.user.username.toLowerCase()
           this.$store.dispatch('auth/login', this.user).then(
             response => {
               if (response.claveEstatusUsuario == 'EST_US_ACTIVO') {
