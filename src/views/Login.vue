@@ -1,14 +1,11 @@
 <template>
   <div class="banner" style="background: rgb(26, 58, 103); height: 100vh;">
     <video src="https://cfsoul.com/wp-content/themes/shopic-child/assets/vid/buildings.mp4" autoplay="" loop=""
-      playsinline="" muted=""
-      poster="https://cfsoul.com/wp-content/themes/shopic-child/assets/img/inicio/fondo_1.png"></video>
+      playsinline="" muted=""></video>
     <div>
-      <div class="row"
-        style="background-image: url(https://portal.cfsoul.com/images/imagen_1.png) ;background-size: 100% 100vh; height: 100vh">
-        <div class="col-md-12 ">
-          <v-lazy v-model="formulario" min-height="0" :options="{ threshold: .01 }" transition="scale-transition"
-            class="card">
+      <div class="row">
+        <div class="col-md-12">
+          <v-lazy v-model="formulario" min-height="0" :options="{ threshold: .01 }" transition="scale-transition" class="card">
             <div class="card-container">
               <center>
                 <img src="https://portal.cfsoul.com/images/icono_amarillo.png" width="100px"><br /><br />
@@ -105,7 +102,7 @@ export default {
   },
   created() {
     if (this.loggedIn) {
-      //this.$router.push('/profile')
+      this.$router.push('/profile')
     }
   },
   mounted() {
@@ -205,10 +202,9 @@ label {
 }
 
 .card {
-  min-width: 500px !important;
+  min-width: 250px !important;
   max-width: 600px !important;
-  top: 50%;
-  margin-top: -320px;
+  top: 100px;
   padding: 20px 25px 0px;
   margin-left: auto;
   margin-right: auto;

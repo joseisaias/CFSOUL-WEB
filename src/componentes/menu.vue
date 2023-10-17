@@ -3,10 +3,10 @@
     <v-navigation-drawer v-model="drawer" permanent color="rgb(26 58 103)" dark :style="'min-height: 100 hv;'+'max-height: ' + (maxHeight-100) + 'px'">
         <v-list-item class="px-2">
             <v-list-item-avatar>
-                <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+                <v-img src="./assets/img/avatar-icon-person-icons.webp"></v-img>
             </v-list-item-avatar>
 
-            <v-list-item-title>{{ currentUser.persona.nombre }}</v-list-item-title>
+            <v-list-item-title>{{ currentUser.info.persona.nombre }}</v-list-item-title>
         </v-list-item>
         <v-list-item  style="margin-top: -30px; margin-left: 50px;">
                 <v-list-item-content>
@@ -23,7 +23,7 @@
                     <v-list-item-title>Inicio</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item class="itemList" v-bind:class="[itemActive == 'solicitudCredito' ? 'itemSelect':'']" @click.prevent="selectMenu('solicitudCredito')">
+            <v-list-item v-if="showAdmin || showEmpl" class="itemList" v-bind:class="[itemActive == 'solicitudCredito' ? 'itemSelect':'']" @click.prevent="selectMenu('solicitudCredito')">
                 <v-list-item-icon>
                     <v-icon>mdi mdi-currency-usd</v-icon>
                 </v-list-item-icon>
@@ -31,7 +31,15 @@
                     <v-list-item-title>Solicitud crédito</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item class="itemList" v-bind:class="[itemActive == 'cliente' ? 'itemSelect':'']" @click.prevent="selectMenu('cliente')">
+            <v-list-item v-if="showAdmin || showEmpl" class="itemList" v-bind:class="[itemActive == 'estadoCuenta' ? 'itemSelect':'']" @click.prevent="selectMenu('estadoCuenta')">
+                <v-list-item-icon>
+                    <v-icon>mdi mdi-finance</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                    <v-list-item-title>Estado de Cuenta</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item v-if="showAdmin || showCFSOUL" class="itemList" v-bind:class="[itemActive == 'cliente' ? 'itemSelect':'']" @click.prevent="selectMenu('cliente')">
                 <v-list-item-icon>
                     <v-icon>mdi mdi-account-tie</v-icon>
                 </v-list-item-icon>
@@ -39,7 +47,7 @@
                     <v-list-item-title>Clientes</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item class="itemList" v-bind:class="[itemActive == 'usuario' ? 'itemSelect':'']" @click.prevent="selectMenu('usuario')">
+            <v-list-item  v-if="showAdmin" class="itemList" v-bind:class="[itemActive == 'usuario' ? 'itemSelect':'']" @click.prevent="selectMenu('usuario')">
                 <v-list-item-icon>
                     <v-icon>mdi mdi-account-group</v-icon>
                 </v-list-item-icon>
@@ -47,7 +55,7 @@
                     <v-list-item-title>Usuarios</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item class="itemList" v-bind:class="[itemActive == 'conciliacion' ? 'itemSelect':'']" @click.prevent="selectMenu('conciliacion')">
+            <v-list-item  v-if="showAdmin || showCFSOUL" class="itemList" v-bind:class="[itemActive == 'conciliacion' ? 'itemSelect':'']" @click.prevent="selectMenu('conciliacion')">
                 <v-list-item-icon>
                     <v-icon>mdi mdi-handshake</v-icon>
                 </v-list-item-icon>
@@ -56,7 +64,7 @@
                     <v-list-item-title>Conciliación</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item class="itemList" v-bind:class="[itemActive == 'seguimiento' ? 'itemSelect':'']" @click.prevent="selectMenu('seguimiento')">
+            <v-list-item  v-if="showAdmin || showClie" class="itemList" v-bind:class="[itemActive == 'seguimiento' ? 'itemSelect':'']" @click.prevent="selectMenu('seguimiento')">
                 <v-list-item-icon>
                     <v-icon>mdi mdi-cached</v-icon>
                 </v-list-item-icon>
@@ -64,7 +72,7 @@
                     <v-list-item-title>Seguimiento</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item class="itemList" v-bind:class="[itemActive == 'admin' ? 'itemSelect':'']" @click.prevent="selectMenu('admin')">
+            <v-list-item  v-if="showAdmin" class="itemList" v-bind:class="[itemActive == 'admin' ? 'itemSelect':'']" @click.prevent="selectMenu('admin')">
                 <v-list-item-icon>
                     <v-icon>mdi mdi-account-cog</v-icon>
                 </v-list-item-icon>
@@ -90,6 +98,26 @@ export default {
         currentUser() {
             const user = this.$store.state.auth.user
             return user
+        },
+        showAdmin() {
+          var rolSelect = this.currentUser.info.rolSelect;
+          var rol = this.$ROL.ROLE_ADMIN;
+          return rolSelect.claveRol.includes(rol);
+        },
+        showEmpl() {
+          var rolSelect = this.currentUser.info.rolSelect;
+          var rol = this.$ROL.ROL_EMPL;
+          return rolSelect.claveRol.includes(rol);
+        },
+        showClie() {
+          var rolSelect = this.currentUser.info.rolSelect;
+          var rol = this.$ROL.ROL_CLIE;
+          return rolSelect.claveRol.includes(rol);
+        },
+        showCFSOUL() {
+          var rolSelect = this.currentUser.info.rolSelect;
+          var rol = this.$ROL.ROL_CFSOUL;
+          return rolSelect.claveRol.includes(rol);
         }
     },
     data() {

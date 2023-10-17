@@ -60,8 +60,8 @@
               <template v-slot:[`item.saldoInicial`]="{ item }">
                 {{ item.saldoInicial | currency }}
               </template>
-              <template v-slot:[`item.pagoTotal`]="{ item }">
-                {{ item.pagoTotal | currency }}
+              <template v-slot:[`item.cuota`]="{ item }">
+                {{ item.cuota | currency }}
               </template>
               <template v-slot:[`item.pagoInteres`]="{ item }">
                 {{ item.pagoInteres | currency }}
@@ -95,7 +95,7 @@ export default {
   props: {
     cliente: {}
   },
-  data () {
+  data() {
     return {
       tablaAmortizacionDialog: false,
       idPersona: 0,
@@ -112,9 +112,9 @@ export default {
       minPeriodo: 6,
       maxPeriodo: 24,
       calendario: [],
-      idEstatusPorPagar:0,
-      idTipoPagoQuincenal:0,
-      idEstatusAdeudo:0,
+      idEstatusPorPagar: 0,
+      idTipoPagoQuincenal: 0,
+      idEstatusAdeudo: 0,
       headerAmortizacion: [{
         text: '# Pago',
         align: 'start',
@@ -131,7 +131,7 @@ export default {
         text: 'Cuota',
         align: 'center',
         sortable: false,
-        value: 'pagoTotal'
+        value: 'cuota'
       },
       {
         text: 'Interés',
@@ -155,33 +155,33 @@ export default {
     }
   },
   computed: {
-    cambiaValorMonto () {
+    cambiaValorMonto() {
       this.montoAux = this.monto
       return true
     },
-    currentUser () {
+    currentUser() {
       const user = this.$store.state.auth.user
       return user
     },
-    montoRule () {
+    montoRule() {
       const aux = [v => !!v || 'El campo es requerido.']
       return aux
     },
-    interes () {
+    interes() {
       let interes = 0
       this.tablaAmortizacion.forEach(element => {
         interes = interes + element.pagoInteres
       })
       return interes
     },
-    pagoTotal () {
+    pagoTotal() {
       let montoTotal = 0
       this.tablaAmortizacion.forEach(element => {
-        montoTotal = montoTotal + element.pagoTotal
+        montoTotal = montoTotal + element.cuota
       })
       return montoTotal
     },
-    tablaAmortizacion () {
+    tablaAmortizacion() {
       const tbl = []
       const pagoCapital = this.monto / this.periodo
       let capitalRestante = this.monto
@@ -191,21 +191,21 @@ export default {
         const obj = {
           numPago: i + 1,
           totalDias: this.calendario[i].totalDias,
-          fechaPago: this.calendario[i].fechaPago,
+          fechaPago: this.calendario[i].fecha,
           pagoCapital: pagoCapital,
           pagoInteres: interes,
           saldoFinal: capitalRestanteFin,
           saldoInicial: capitalRestante,
           idEstatusPago: this.idEstatusPorPagar
         }
-        obj.pagoTotal = obj.pagoCapital + obj.pagoInteres
+        obj.cuota = obj.pagoCapital + obj.pagoInteres
         tbl.push(obj)
         capitalRestante = capitalRestanteFin
       }
       return tbl
     }
   },
-  mounted () {
+  mounted() {
     if (!this.currentUser) {
       this.$router.push('/login')
     }
@@ -213,7 +213,7 @@ export default {
     this.obtenerTablaCalendario()
   },
   methods: {
-    limpiarCotizacion () {
+    limpiarCotizacion() {
       this.$confirm(
         {
           message: '¿Está seguro de limpiar el formulario?',
@@ -222,7 +222,7 @@ export default {
         }
       )
     },
-    cargaInicial () {
+    cargaInicial() {
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_MONTO_MIN).then(resp => {
         this.montoMinimo = resp.data.body[0].descripcion
         this.monto = this.montoMinimo
@@ -260,7 +260,7 @@ export default {
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.ESTATUS_POR_PAGAR).then(resp => {
         this.idEstatusPorPagar = resp.data.body[0].idCatDetalle
       }).catch()
-      CatGeneralService.getCatDetalleByClave(this.$CAT_DET.ESTATUS_ADEUDO).then(resp => {
+      CatGeneralService.getCatDetalleByClave(this.$CAT_DET.ESTATUS_BIT_ADEUDO).then(resp => {
         this.idEstatusAdeudo = resp.data.body[0].idCatDetalle
       }).catch()
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.TIPO_PAGO_QUINCENAL).then(resp => {
@@ -268,28 +268,42 @@ export default {
       }).catch()
     },
     guardarSolicitud() {
-      var solicitudRequest = {
-        tablaAmortizacion: this.tablaAmortizacion,
-        credito:{
-          idEmpleado: this.currentUser.id,
-          idEstatusCredito: this.idEstatusAdeudo,
-          idTipoPago: this.idTipoPagoQuincenal,
-          numPagos: this.periodo,
-          montoSolicitado: this.monto,
-          intereses: this.interes,
-          pagoTotal: this.pagoTotal
+      this.$confirm(
+        {
+          message: '¿Está seguro de solicitar el credito?',
+          button: { no: 'No', yes: 'Sí' },
+          callback: confirm => {
+            if (confirm) {
+              var solicitudRequest = {
+                tablaAmortizacion: this.tablaAmortizacion,
+                credito: {
+                  idEmpleado: this.currentUser.info.empleadoSelect.idEmpleado,
+                  idEstatusCredito: this.idEstatusAdeudo,
+                  idTipoPago: this.idTipoPagoQuincenal,
+                  numPagos: this.periodo,
+                  montoSolicitado: this.monto,
+                  intereses: this.interes,
+                  pagoTotal: this.pagoTotal
+                }
+              }
+              SolicitudService.guardarSolicitud(solicitudRequest).then(resp => {
+                this.$toasts.push({ type: 'info', message: 'Registro guardado.' })
+              }).catch(
+                error => {
+                  this.$toasts.push({ type: 'error', message: 'Ocurrio un error.' })
+                  console.log('Ocurrio un error al guardar la solicitud', error)
+                }
+              );
+            } else {
+
+            }
+          }
         }
-      }
-      SolicitudService.guardarSolicitud(solicitudRequest).then(resp => {
-        this.$toasts.push({ type: 'info', message: 'Registro guardado.' })
-      }).catch(
-        error => {
-          this.$toasts.push({ type: 'error', message: 'Ocurrio un error.' })
-          console.log('Ocurrio un error al guardar la solicitud', error)
-        }
-      );
+      )
+
+
     },
-    obtenerTablaCalendario () {
+    obtenerTablaCalendario() {
       const fechaActual = new Date()
       let obtenerYear = fechaActual.getFullYear()
       let obtenerMes = fechaActual.getMonth() + 1
@@ -303,22 +317,22 @@ export default {
         if ((i === 0 && obtenerDia < 15) || i > 0) {
           const obj = {
             totalDias: 15,
-            fecha: '1/' + obtenerMes + '/' + obtenerYear
+            fecha: '15/' + obtenerMes + '/' + obtenerYear
           }
           this.calendario.push(obj)
         }
         const obj2 = {
           totalDias: diasMes - 15,
-          fecha: '15/' + obtenerMes + '/' + obtenerYear
+          fecha: diasMes + '/' + obtenerMes + '/' + obtenerYear
         }
         this.calendario.push(obj2)
         obtenerMes++
       }
     },
-    diasEnUnMes (mes, año) {
-      return new Date(año, mes, 0).getDate()
+    diasEnUnMes(mes, anio) {
+      return new Date(anio, mes, 0).getDate()
     },
-    validaMonto () {
+    validaMonto() {
       if (this.montoAux <= this.montoMinimo) {
         this.montoAux = this.montoMinimo
       }

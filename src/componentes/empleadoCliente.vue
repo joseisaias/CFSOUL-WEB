@@ -39,8 +39,11 @@
             </v-alert>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
+            <v-btn icon color="rgb(27, 85, 158)">
+            <v-icon dark @click="verCreditos(item)"> mdi mdi-finance </v-icon>
+            </v-btn>
             <v-btn icon color="rgb(27, 85, 158)" v-if="item.indStatusString == 'Activo'">
-              <v-icon dark @click="editarEmpleado(item)"> mdi-file-edit-outline </v-icon>
+            <v-icon dark @click="editarEmpleado(item)"> mdi-file-edit-outline </v-icon>
             </v-btn>
             <v-btn icon color="rgb(27, 85, 158)">
               <v-icon dark @click="verEmpleado(item)"> mdi-magnify </v-icon>
@@ -232,6 +235,10 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="estadoCuenta">
+        <EstadoCuenta :idEmpleadoProps="idEmpleado"/>
+      </v-dialog>
     </v-card>
   </div>
 </template>
@@ -239,6 +246,7 @@
 <script>
 /* eslint-disable */
 import DomicilioApp from '@/componentes/domicilio'
+import EstadoCuenta from '@/componentes/estadoCuenta'
 import EmpleadoService from '@/services/empleado.service'
 import VuetifyMoney from '@/componentes/VuetifyMoney'
 
@@ -260,13 +268,16 @@ XLSX.set_cptable(cpexcel)
 export default {
   components: {
     DomicilioApp,
-    VuetifyMoney
+    VuetifyMoney,
+    EstadoCuenta
   },
   props: {
     cliente: {}
   },
   data () {
     return {
+      idEmpleado: null,
+      estadoCuenta: false,
       numErroresExcel: 0,
       readonly: false,
       empleadosRegistrados: false,
@@ -643,6 +654,12 @@ export default {
     calcularMontoSalarioPrestamo () {
       this.empleado.montoMaximoPrestamo = this.empleado.salario * 0.30
     },
+
+    verCreditos(item){
+      this.idEmpleado = item.idEmpleado
+      this.estadoCuenta = true
+    },
+
     rfcValido(rfc, aceptarGenerico = true) {
       const re = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;
       var validado = rfc.match(re);

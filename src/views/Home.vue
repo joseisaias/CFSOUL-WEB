@@ -21,6 +21,9 @@
 
           <solicitudCredito v-if="selectMenu == 'solicitudCredito' && subSelect == ''" @subSelect="subSelectCliente($event)">
           </solicitudCredito>
+          <seguimientoCliente v-if="selectMenu == 'seguimiento' && subSelect == ''" @subSelect="subSelectCliente($event)"></seguimientoCliente>
+          <conciliacionApp v-if="selectMenu == 'conciliacion' && subSelect == ''" @subSelect="subSelectCliente($event)"/>
+          <estadoCuenta v-if="selectMenu == 'estadoCuenta' && subSelect == ''" @subSelect="subSelectCliente($event)"/>
         </v-card>
       </div>
     </div>
@@ -33,13 +36,17 @@ import menuUsuario from '@/componentes/menu'
 import clientesApi from '@/componentes/clientesApi'
 import empleadoCliente from '@/componentes/empleadoCliente'
 import solicitudCredito from '@/componentes/solicitudCredito'
+import seguimientoCliente from '@/componentes/seguimientoCliente'
+import conciliacionApp from '@/componentes/conciliacion'
+import estadoCuenta from '@/componentes/estadoCuenta'
+
 const $ = require('jquery');
 const jQuery = require('jquery');
 
 
 export default {
   name: 'Home',
-  components: { menuUsuario, clientesApi, empleadoCliente, solicitudCredito },
+  components: { menuUsuario, clientesApi, empleadoCliente, solicitudCredito, seguimientoCliente, conciliacionApp, estadoCuenta },
   computed: {
     currentUser() {
       const user = this.$store.state.auth.user

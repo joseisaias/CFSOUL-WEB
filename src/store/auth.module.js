@@ -18,11 +18,6 @@ export const auth = {
     login ({ commit }, user) {
       return AuthService.login(user).then(
         user => {
-          /// if (user.roles.length == 1) {
-          user.rolSelect = user.roles[0]
-          /* } else {
-                        user.rolSelect = ['Seleccionar Rol'];
-                    } */
           const aux = JSON.stringify(user)
           commit('loginSuccess', JSON.parse(aux))
           return Promise.resolve(JSON.parse(aux))
@@ -81,7 +76,7 @@ export const auth = {
       state.status.loggedIn = false
     },
     rolSeleccionado (state, roleSeleccionado) {
-      state.user.rolSelect = [roleSeleccionado]
+      state.user.info.rolSelect = [roleSeleccionado]
       localStorage.setItem('user', JSON.stringify(state.user))
     }
   }

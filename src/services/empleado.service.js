@@ -22,6 +22,18 @@ class EmpleadoService {
     return axios.get(API_URL + idCliente + '/getEmpleadosByIdCliente', { headers: authHeader() })
   }
 
+  getEmpleadosByIdClienteSeguimiento (idCliente, fechaPago) {
+    return axios.get(API_URL + idCliente + '/' + fechaPago + '/getEmpleadosByIdClienteSeguimiento', { headers: authHeader() })
+  }
+
+  getCreditosByEmpleado (idEmpleado) {
+    return axios.get(API_URL + idEmpleado + '/getCreditosByEmpleado', { headers: authHeader() })
+  }
+
+  getTablaAmortizacion (idCredito) {
+    return axios.get(API_URL + idCredito + '/getTablaAmortizacion', { headers: authHeader() })
+  }
+
   getEmpleadoById (idEmpleado) {
     return axios.get(API_URL + idEmpleado + '/getEmpleadoById', { headers: authHeader() })
   }

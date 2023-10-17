@@ -88,6 +88,19 @@ export default {
 };
 </script>
 <style>
+.theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
+  background: rgba(27, 86, 158, 0.575) !important;
+}
+
+.v-icon.notranslate.mdi.mdi-checkbox-marked.theme--light {
+  color: inherit !important;
+}
+.v-icon.notranslate.mdi.mdi-checkbox-blank-outline.theme--light {
+  color: white;
+}
+tr .v-icon.notranslate.mdi.mdi-checkbox-blank-outline.theme--light {
+  color: inherit;
+}
 .v-data-table-header {
   background: rgb(26, 58, 103);
 }
@@ -111,5 +124,11 @@ th,
 }
 .v-application--wrap{
   height: auto !important;
+}
+.v-dialog>.v-card>.v-card__title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: .0125em;
+    padding: 0px 0px 10px !important;
 }
 </style>
