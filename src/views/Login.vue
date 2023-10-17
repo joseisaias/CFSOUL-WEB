@@ -120,7 +120,8 @@ export default {
               if (response.claveEstatusUsuario == 'EST_US_ACTIVO') {
                 this.$router.push('/profile')
               } else if (response.claveEstatusUsuario == 'EST_US_NUEVO') {
-                this.$router.push('/datosPersona')
+                this.$router.push('/profile')
+                //this.$router.push('/datosPersona')
               } else if (response.claveEstatusUsuario == 'EST_US_BLOQUEADO') {
                 this.loading = false;
                 this.$toasts.push({

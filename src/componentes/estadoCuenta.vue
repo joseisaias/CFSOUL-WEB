@@ -114,13 +114,14 @@ export default {
     if (!this.currentUser) {
       this.$router.push('/login')
     }
+    this.user = this.currentUser
+
     if(this.idEmpleadoProps != undefined && this.idEmpleadoProps != null && this.idEmpleadoProps > 0){
       this.idEmpleado = this.idEmpleadoProps
     } else {
       this.idEmpleado = this.user.info.empleadoSelect.idEmpleado;
     }
 
-    this.user = this.currentUser
     this.cargaInicial()
   },
   methods: {

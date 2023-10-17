@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-card v-if="!tablaAmortizacionDialog">
+    <v-card >
       <div class="ml-2 mr-2">
         <v-card-title tag="div" style="padding-bottom: 50px;">
           Solicitud de crédito
           <v-spacer></v-spacer>
         </v-card-title>
         <v-row>
-          <v-col xs="5" sm="5" md="5" lg="5" xl="5">
+          <v-col xs="5" sm="5" md="5" lg="5" xl="5" >
             <v-form ref="form">
               <v-row>
                 <v-col offset="1" cols="10">
@@ -41,7 +41,13 @@
             </v-row>
             <v-row>
               <v-col offset="1" cols="4"> Interés </v-col>
-              <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ interes | currency }}</span>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ interes - (interes * .16)  | currency }}</span>
+              </v-col>
+              <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
+            </v-row>
+            <v-row>
+              <v-col offset="1" cols="4"> Iva </v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ (interes * .16) | currency }}</span>
               </v-col>
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
@@ -51,7 +57,7 @@
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
           </v-col>
-          <v-col xs="6" sm="6" md="6" lg="6" xl="6" style="margin-top: -110px;">
+          <v-col xs="6" sm="6" md="6" lg="6" xl="6" style="margin-top: -110px;" v-if="tablaAmortizacionDialog">
             <div class="v-card__title" style="padding-bottom: 50px;">
               Tabla de amortización
             </div>
@@ -79,7 +85,8 @@
       </div>
       <v-card-actions style="padding: 30px;">
         <v-btn dark color="primary" @click="guardarSolicitud()">SOLICITAR CRÉDITO</v-btn>
-        <v-btn dark color="red" @click="limpiarCotizacion()">Limpiar</v-btn>
+        <v-btn dark color="primary" @click="tablaAmortizacionDialog = true">tabla de amortización</v-btn>
+        <v-btn dark color="red" @click="limpiarCotizacion();">Limpiar</v-btn>
       </v-card-actions>
     </v-card>
     <span style="display: none;">{{ cambiaValorMonto }}</span>
@@ -218,7 +225,7 @@ export default {
         {
           message: '¿Está seguro de limpiar el formulario?',
           button: { no: 'No', yes: 'Sí' },
-          callback: confirm => { if (confirm) { this.$refs.form.reset() } }
+          callback: confirm => { if (confirm) { this.$refs.form.reset(); this.tablaAmortizacionDialog = false} }
         }
       )
     },
