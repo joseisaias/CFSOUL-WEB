@@ -15,7 +15,7 @@
                   </v-text-field>
                 </v-col>
                 <v-col offset="1" cols="10">
-                  <v-slider label="Monto" v-model="monto" track-color="grey" always-dirty thumb-label="always"
+                  <v-slider label="Monto" v-model="monto" track-color="grey" always-dirty thumb-label="always" v-if="montoMaximo >= montoMinimo"
                     thumb-size="40" :min="montoMinimo" :step="stepMonto" :max="montoMaximo">
                   </v-slider>
                 </v-col>
@@ -84,8 +84,8 @@
 
       </div>
       <v-card-actions style="padding: 30px;">
-        <v-btn dark color="primary" @click="guardarSolicitud()">SOLICITAR CRÉDITO</v-btn>
-        <v-btn dark color="primary" @click="tablaAmortizacionDialog = true">tabla de amortización</v-btn>
+        <v-btn dark color="primary" @click="guardarSolicitud()"  v-if="montoMaximo >= montoMinimo">SOLICITAR CRÉDITO</v-btn>
+        <v-btn dark color="primary" @click="tablaAmortizacionDialog = true"  v-if="montoMaximo >= montoMinimo">tabla de amortización</v-btn>
         <v-btn dark color="red" @click="limpiarCotizacion();">Limpiar</v-btn>
       </v-card-actions>
     </v-card>
@@ -113,7 +113,7 @@ export default {
       interesDiario: 0,
       interesApicable: 0,
       valorAux: 0,
-      montoMaximo: 25000,
+      montoMaximo: 1000,
       montoMinimo: 100,
       stepMonto: 50,
       minPeriodo: 6,
@@ -218,6 +218,7 @@ export default {
     }
     this.cargaInicial()
     this.obtenerTablaCalendario()
+    this.obtenMontoMaximo()
   },
   methods: {
     limpiarCotizacion() {
@@ -230,6 +231,7 @@ export default {
       )
     },
     cargaInicial() {
+
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_MONTO_MIN).then(resp => {
         this.montoMinimo = resp.data.body[0].descripcion
         this.monto = this.montoMinimo
@@ -263,7 +265,6 @@ export default {
         this.valorAux = resp.data.body[0].descripcion
       }).catch()
 
-
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.ESTATUS_POR_PAGAR).then(resp => {
         this.idEstatusPorPagar = resp.data.body[0].idCatDetalle
       }).catch()
@@ -273,6 +274,17 @@ export default {
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.TIPO_PAGO_QUINCENAL).then(resp => {
         this.idTipoPagoQuincenal = resp.data.body[0].idCatDetalle
       }).catch()
+    },
+
+    obtenMontoMaximo() {
+      SolicitudService.obtenerMontoMaximo(this.currentUser.info.empleadoSelect.idEmpleado).then(resp => {
+        this.montoMaximo= this.currentUser.info.empleadoSelect.montoMaximoPrestamo - resp.data.body
+      }).catch(
+        error => {
+          this.$toasts.push({ type: 'error', message: 'Ocurrio un error al obtener el monto máximo.' })
+          console.log('Ocurrio un error al obtener el monto máximo', error)
+        }
+      );
     },
     guardarSolicitud() {
       this.$confirm(
@@ -294,6 +306,7 @@ export default {
                 }
               }
               SolicitudService.guardarSolicitud(solicitudRequest).then(resp => {
+                this.obtenMontoMaximo();
                 this.$toasts.push({ type: 'info', message: 'Registro guardado.' })
               }).catch(
                 error => {

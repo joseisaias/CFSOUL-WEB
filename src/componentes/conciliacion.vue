@@ -13,12 +13,11 @@
           <v-data-table v-model="selectedList" :headers="headers" item-key="idCliente" :items="clientes" :search="txtBuscar" show-select
              @toggle-select-all="selectAllToggle">
 
-            <template v-slot:[`item.data-table-select`]="{ item, isSelected, select }">
+            <template v-slot:[`item.data-table-select`]="{ isSelected, select, item }">
               <v-simple-checkbox
                 :value="isSelected"
-                :readonly="item.idConciliacion > 0"
                 :disabled="item.idConciliacion > 0"
-                @input="select(item)"
+                @input="select($event)"
               ></v-simple-checkbox>
             </template>
 
@@ -88,7 +87,7 @@ export default {
   },
   mounted() {
     //this.cargaInicial(this.obtenerFechaProximoPago(new Date()))
-    this.cargaInicial(this.obtenerFechaProximoPago(new Date(2023, 10, 1)))
+    this.cargaInicial(this.obtenerFechaProximoPago(new Date(2023, 11, 15)))
   },
   methods: {
     cargaInicial(fecha) {
@@ -122,11 +121,9 @@ export default {
     },
     conciliar() {
       ConciliacionService.ConciliaPago(this.selectedList).then(resp => {
-        this.clientes = resp.data.body
-        const self = this;
-        this.clientes.map(item => {
-          if (item.idConciliacion > 0) self.disabledCount += 1
-        })
+        this.cargaInicial(this.fecha)
+        this.selectedList = []
+        this.$toasts.push({ type: 'info', message: 'Conciliación exitosa.' })
       }).catch(error => {
         console.error(error)
       })

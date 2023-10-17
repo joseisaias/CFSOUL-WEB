@@ -6,7 +6,7 @@
       </div>
       <div class="col-10" style="padding-top: 50px;">
         <center>
-          <span style="color: white; font-size: 38px;">CAPITAL & FINANCIAL SOUL {{ maxHeight }}</span>
+          <span style="color: white; font-size: 38px;"> CAPITAL & FINANCIAL SOUL </span>
         </center>
       </div>
     </div>
