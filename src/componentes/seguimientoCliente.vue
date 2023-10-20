@@ -105,17 +105,17 @@ export default {
         value: 'cuota'
       },
       {
-        text: 'Monto Prestamo',
+        text: 'Monto Préstamo',
         align: 'center',
         value: 'pagoTotal'
       },
       {
-        text: 'Maximo Autorizado',
+        text: 'Máximo Autorizado',
         align: 'center',
         value: 'montoMaximoPrestamo'
       },
       {
-        text: 'Proximo Pago',
+        text: 'Próximo Pago',
         value: 'fechaPago'
       },
       {
