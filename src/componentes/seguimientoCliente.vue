@@ -65,6 +65,7 @@
   </div>
 </template>
 <script>
+/*eslint-disable*/
 import EmpleadoService from '@/services/empleado.service'
 
 import TablaAmortizacion from '@/componentes/tablaAmortizacion'
@@ -138,7 +139,9 @@ export default {
       this.$router.push('/login')
     }
     this.user = this.currentUser
-    this.proximaFecha = this.obtenerFechaProximoPago()
+    //this.proximaFecha = this.obtenerFechaProximoPago(new Date())
+    //mes va de 0 a 11 donde 0 es =al mes 1 (enero) y 11 es igualo al mes 12(diciembre)
+    this.obtenerFechaProximoPago(new Date(2023, 11, 1))
     setTimeout(() => {
       this.cargaInicial()
     }, 500)
@@ -150,8 +153,7 @@ export default {
         this.montoDeudaTotal = resp.data.body.montoDeudaTotal
       }).catch()
     },
-    obtenerFechaProximoPago () {
-      const fechaActual = new Date()
+    obtenerFechaProximoPago (fechaActual) {
       const anio = fechaActual.getFullYear()
       const mes = fechaActual.getMonth() + 1
       const obtenerDia = fechaActual.getDate()

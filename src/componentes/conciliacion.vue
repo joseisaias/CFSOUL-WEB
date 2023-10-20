@@ -86,8 +86,8 @@ export default {
     }
   },
   mounted() {
-    //this.cargaInicial(this.obtenerFechaProximoPago(new Date()))
-    this.cargaInicial(this.obtenerFechaProximoPago(new Date(2023, 11, 15)))
+    this.cargaInicial(this.obtenerFechaProximoPago(new Date()))
+    //this.cargaInicial(this.obtenerFechaProximoPago(new Date(2023, 11, 15)))
   },
   methods: {
     cargaInicial(fecha) {

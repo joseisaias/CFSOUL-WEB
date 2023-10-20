@@ -26,10 +26,6 @@ class UserService {
     return axios.post(API_URL + 'persona/cambiarPassword', usuario, { headers: authHeader() })
   }
 
-  editaUsuarioClientePass (usuario) {
-    return axios.post(API_URL + 'usuario/editaUsuarioClientePass', usuario, { headers: authHeader() })
-  }
-
   getUsuarios () {
     return axios.get(API_URL + 'usuario/getUsuarios', { headers: authHeader() })
   }
@@ -39,8 +35,15 @@ class UserService {
   }
 
   obtenerUsuario (id) {
-    const usuarioDto = { idUsuario: id }
-    return axios.post(API_URL + 'usuario/obtenerUsuario', { usuarioDto }, { headers: authHeader() })
+    return axios.get(API_URL + 'usuario/' + id + '/obtenerUsuario', { headers: authHeader() })
+  }
+
+  saveUsuario (persona) {
+    return axios.post(API_URL + 'usuario/saveUsuario', persona, { headers: authHeader() })
+  }
+
+  editaUsuarioClientePass (usuario) {
+    return axios.post(API_URL + 'usuario/editaUsuarioClientePass', usuario, { headers: authHeader() })
   }
 
   obtenerRoles () {
@@ -53,14 +56,6 @@ class UserService {
 
   gurdarUsuarioNuevo (persona) {
     return axios.post(API_URL + 'usuario/gurdarUsuarioNuevo', persona, { headers: authHeader() })
-  }
-
-  obtenerInstructores () {
-    return axios.get(API_URL + 'usuario/obtenerInstructores', { headers: authHeader() })
-  }
-
-  obtenerAlumnosByCurso (idCurso) {
-    return axios.post(API_URL + 'usuario/obtenerAlumnosByCurso', { idCurso: idCurso }, { headers: authHeader() })
   }
 }
 export default new UserService()

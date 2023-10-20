@@ -99,8 +99,7 @@
                     :disabled="disabledCampos" :rules="correoRule"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model.number="persona.telefono" label="Telefono" :disabled="disabledCampos" counter
-                    maxlength="10"></v-text-field>
+                  <v-text-field v-model="persona.telefono" label="Telefono" :disabled="disabledCampos"  counter maxlength="10" :rules="telefonoRule"></v-text-field>
                 </v-col>
               </v-row>
               <v-spacer class="line"></v-spacer>
@@ -126,11 +125,11 @@
               <h2>Cuenta bancaria</h2>
               <v-row>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model.number="cuentaBancaria.clabeInterbancaria" label="Clabe interbancaria"
+                  <v-text-field v-model="cuentaBancaria.clabeInterbancaria" label="Clabe interbancaria"
                     :disabled="disabledCampos" counter maxlength="18" :rules="clvIntRule"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model.number="cuentaBancaria.numeroCuenta" label="Numero cuenta"
+                  <v-text-field v-model="cuentaBancaria.numeroCuenta" label="Numero cuenta"
                     :disabled="disabledCampos" counter maxlength="10" :rules="numCueRule"></v-text-field>
                 </v-col>
               </v-row>
@@ -344,27 +343,7 @@ export default {
         text: 'Acciones',
         value: 'actions',
         sortable: false
-      }/*,
-      {
-        text: 'CP',
-        value: 'domicilio.cp'
-      },
-      {
-        text: 'Calle',
-        value: 'domicilio.calle'
-      },
-      {
-        text: 'Colonia',
-        value: 'domicilio.colonia'
-      },
-      {
-        text: 'Número Exterior',
-        value: 'domicilio.numeroExterior'
-      },
-      {
-        text: 'Número Interior',
-        value: 'domicilio.numeroInterior'
-      }*/],
+      }],
       headers: [{
         text: 'Nombre',
         align: 'start',
@@ -425,6 +404,7 @@ export default {
       numCueRule: [v => !!v || 'El campo es requerido.', v => Number(v) > 0 || 'El campo es numérico', v => (v && (v+'').length == 10) || 'El campo debe tener 10 digitos.'],
       correoRule: [v => !!v || 'El campo es requerido.', v => /.+@.+\..+/.test(v) || 'El campo no corresponde a un correo electronico'],
       rfcRule: [v => !!v || 'El campo es requerido.', v => /^([A-Za-zÑñ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Za-z\d]{2})([A\d])$/.test(v) || 'El RFC es invalido'],
+      telefonoRule: [v => !!v || 'El campo es requerido.', v => Number(v) > 0 || 'El campo es numérico', v => (v && v.length == 10) || 'El campo debe tener 10 digitos.'],
     }
   },
   computed: {
@@ -480,8 +460,8 @@ export default {
             nombre: item.Nombre,
             apellidoPaterno: item.Primer_Apellido,
             apellidoMaterno: item.Segundo_Apellido,
-            rfc: item.RFC.toUpperCase(),
-            curp: item.CURP.toUpperCase(),
+            rfc: item.RFC!=undefined && item.RFC!= null ? item.RFC.toUpperCase() : item.RFC,
+            curp: item.CURP!=undefined && item.CURP!= null ? item.CURP.toUpperCase() : item.CURP,
             correoElectronico: item.Email.toLowerCase(),
             telefono: item.Telefono
           },
@@ -582,12 +562,12 @@ export default {
     },
     guardarEmpleadosExcel () {
       EmpleadoService.guardarEmpleadosExcel(this.listEmpleadosExcel).then(resp => {
-        this.cargaInicial()
-        this.closeEmpleado()
         if(resp.data.body.length > 0){
           this.listEmpleadosExcel = resp.data.body
           this.empleadosRegistrados = true
         } else {
+          this.cargaInicial()
+          this.closeEmpleado()
           this.cargaExcelDialog = false
         }
       }).catch(error => {
