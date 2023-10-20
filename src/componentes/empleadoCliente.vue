@@ -357,7 +357,7 @@ export default {
         value: 'rfc'
       },
       {
-        text: 'Maximo autorizado',
+        text: 'Máximo autorizado',
         value: 'montoMaximoPrestamo'
       },
       {
@@ -369,7 +369,7 @@ export default {
         value: 'email'
       },
       {
-        text: 'Telefono',
+        text: 'Teléfono',
         value: 'telefono'
       },
       {

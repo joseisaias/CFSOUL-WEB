@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field v-model="cp" label="cp" counter maxlength="5" :disabled="deshabilitar"
+        <v-text-field v-model="cp" label="Código Postal" counter maxlength="5" :disabled="deshabilitar"
         @blur="buscarDomicilio()" :rules="[cpRule]" required></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
