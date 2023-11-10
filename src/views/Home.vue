@@ -4,12 +4,12 @@
       <div class="col-2">
         <img src="https://portal.cfsoul.com/images/icono_amarillo.png" height="80px">
       </div>
-      <div class="col-8" style="padding-top: 50px;">
+      <div class="col-8" style="padding-top: 20px;">
             <center>
               <span style="color: white; font-size: 38px;"> CAPITAL & FINANCIAL SOUL </span>
             </center>
         </div>
-        <div class="col-2">
+        <div class="col-2" style="padding-right: 15px;">
           <router-link to="/datosPersona">
             <v-img src="./assets/img/avatar-icon-person-icons.webp" style="width: 25px; float: right;"></v-img>
             <h3 style="float: right;color: white; padding-left: 5px; padding-right: 5px;">{{ currentUser.info.persona.nombre }}</h3>
@@ -17,7 +17,7 @@
           <br/><br/>
           <span style="float: right;color: white; padding-left: 5px; padding-right: 5px;"><a @click.prevent="cerrarSesion()">Cerrar Sesión</a></span>
       </div>
-      <div class="col-2">
+      <!--div class="col-2">
       <v-list-item class="px-2" permanent color="rgb(26 58 103)" dark :style="'min-height: 100 hv;'+'max-height: ' + (maxHeight-100) + 'px'">
             <v-list-item-avatar>
                 <v-img src="./assets/img/avatar-icon-person-icons.webp"></v-img>
@@ -30,7 +30,7 @@
                 </v-list-item-content>
             </v-list-item>
         <v-divider></v-divider>
-      </div>
+      </div-->
     </div>
     <div class="row" :style="{ height: maxHeight - 100 + 'px' }">
       <menuUsuario :maxHeight="maxHeight" @selectMenu="selectMenu = $event; subSelect = ''"></menuUsuario>
