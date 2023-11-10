@@ -62,8 +62,8 @@ export default {
           value: 'monto'
         },
         {
-          text: 'Total Credito',
-          align: 'start',
+          text: 'Total Crédito',
+          align: 'center',
           sortable: false,
           value: 'totalCredito'
         },

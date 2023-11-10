@@ -134,12 +134,12 @@
                     label="Actividad" :disabled="disabledCampos"></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="cliente.idEstablecimiento" :items="catEstablecimiento" item-value="idCat"
-                    item-text="descripcion" label="Establecimiento" :disabled="disabledCampos"></v-select>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
                   <v-select v-model="cliente.idGiro" :items="catGiro" item-value="idCat" item-text="descripcion"
                     label="Giro" :disabled="disabledCampos"></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select v-model="cliente.idEstablecimiento" :items="catEstablecimiento" item-value="idCat"
+                    item-text="descripcion" label="Establecimiento" :disabled="disabledCampos"></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field v-model="cliente.paginaWeb" label="Página Web" :disabled="disabledCampos"></v-text-field>
