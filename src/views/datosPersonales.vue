@@ -1,6 +1,19 @@
 <template>
-  <div>
-    <v-card>
+  <div id="home">
+    <div class="head row"  style="height: 100px; padding-left: 40px; padding-top: 5px;background: rgb(26 58 103)">
+      <div class="col-2">
+        <img src="https://portal.cfsoul.com/images/icono_amarillo.png" height="80px">
+      </div>
+      <div class="col-10" style="padding-top: 50px;">
+        <center>
+          <span style="color: white; font-size: 38px;"> CAPITAL & FINANCIAL SOUL </span>
+        </center>
+      </div>
+    </div>
+    <div class="row" :style="{ height: maxHeight - 100 + 'px' }">
+      <menuUsuario :maxHeight="maxHeight" @selectMenu="selectMenu = $event; subSelect = ''"></menuUsuario>
+      <div id="content" >
+        <v-card>
       <v-card-title tag="div">
         <v-toolbar color="rgb(26, 58, 103)" dark>
           Datos Personales
@@ -64,24 +77,33 @@
         </v-container>
       </v-card-actions>
     </v-card>
-    <v-dialog v-model="cambiaContrasenia" persistent>
-      <v-card>
-        <v-card-title>Cambiar Contraseña</v-card-title>
-        <v-card-text>
-          <v-alert type="success">Hola, por favor cambia tu password.</v-alert>
-          <v-text-field v-model="usuario.password" :rules="validacionGeneral" label="Password"
-            v-validate="'required|min:6|max:40'" type="password"></v-text-field>
-          <v-text-field v-model="usuario.passwordValida" :rules="validacionPassword" label="Valida password"
-            v-validate="'required|min:6|max:40'" type="password"></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="guardarUsuario">
-            Guardar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <v-form ref="form">
+      <v-dialog v-model="cambiaContrasenia" persistent min-width="350px" max-width="600px">
+        <v-card>
+          <v-card-title>
+            <v-toolbar color="rgb(26, 58, 103)" dark>
+              Cambiar Contraseña
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            </v-card-title>
+          <v-card-text>
+            <v-alert type="success">Hola, por favor cambia tu password.</v-alert>
+            <v-text-field v-model="usuario.password" :rules="validacionGeneral" label="Password"
+              v-validate="'required|min:6|max:40'" type="password"></v-text-field>
+            <v-text-field v-model="usuario.passwordValida" :rules="validacionPassword" label="Valida password"
+              v-validate="'required|min:6|max:40'" type="password"></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="guardarUsuario">
+              Guardar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-form>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -148,9 +170,6 @@ export default {
         cuentaBancaria: this.cuentaBancaria
       }
       UserService.saveUsuario(resp).then(resp => {
-        this.cargaInicial()
-        this.closeEmpleado()
-        this.$router.push('/profile')
       }).catch(error => {
         console.error(error)
       })
@@ -168,7 +187,7 @@ export default {
         UserService.editaUsuarioClientePass(this.usuario)
           .then(response => {
             if (response.data) {
-              this.dialogCambiaUsuario = false
+              this.cambiaContrasenia = true
               this.$store.dispatch('auth/registerUsuario', response.data)
               this.$toasts.push({
                 type: 'success',
@@ -182,7 +201,6 @@ export default {
               })
             }
           }).catch(() => {
-            this.dialogCargando = false
             this.$toasts.push({
               type: 'error',
               message: 'Ocurrio un error intente nuevamente.'

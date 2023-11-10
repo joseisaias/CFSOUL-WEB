@@ -541,8 +541,22 @@ export default {
       this.listEmpleadosExcel.splice(editedIndex, 1)
     },
     editarEmpleadoExcel (i) {
-      const editedIndex = this.listEmpleadosExcel.indexOf(i)
-      const item = this.listEmpleadosExcel[editedIndex]
+      let item = {}
+      if(this.listEmpleadosExcel.length > 1){
+        let editedIndex = this.listEmpleadosExcel.indexOf(i);
+
+        if(editedIndex == undefined || editedIndex == null )
+          return;
+        if(editedIndex === -1)
+          item = this.listEmpleadosExcel.find((it) => it.persona.rfc === i.persona.rfc);
+        else
+          item = this.listEmpleadosExcel[editedIndex]
+        if(item == undefined || item == null )
+          return;
+      } else {
+        item = this.listEmpleadosExcel[0]
+      }
+
       this.itemExcel = item
 
       this.empleado = item.empleado
@@ -562,6 +576,7 @@ export default {
     },
     guardarEmpleadosExcel () {
       EmpleadoService.guardarEmpleadosExcel(this.listEmpleadosExcel).then(resp => {
+        this.listEmpleadosExcel = [];
         if(resp.data.body.length > 0){
           this.listEmpleadosExcel = resp.data.body
           this.empleadosRegistrados = true

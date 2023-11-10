@@ -139,9 +139,9 @@ export default {
       this.$router.push('/login')
     }
     this.user = this.currentUser
-    //this.proximaFecha = this.obtenerFechaProximoPago(new Date())
+    this.proximaFecha = this.obtenerFechaProximoPago(new Date())
     //mes va de 0 a 11 donde 0 es =al mes 1 (enero) y 11 es igualo al mes 12(diciembre)
-    this.obtenerFechaProximoPago(new Date(2023, 11, 1))
+    //this.obtenerFechaProximoPago(new Date(2023, 11, 1))
     setTimeout(() => {
       this.cargaInicial()
     }, 500)
@@ -153,21 +153,27 @@ export default {
         this.montoDeudaTotal = resp.data.body.montoDeudaTotal
       }).catch()
     },
-    obtenerFechaProximoPago (fechaActual) {
-      const anio = fechaActual.getFullYear()
-      const mes = fechaActual.getMonth() + 1
-      const obtenerDia = fechaActual.getDate()
-      const diasMes = new Date(anio, mes, 0).getDate()
-      if (obtenerDia < 15) {
-        return '15-' + mes + '-' + anio
-      } else {
-        return diasMes + '-' + mes + '-' + anio
-      }
-    },
     verTablaAmortizacion (item) {
       this.idCredito = item.idCredito
       this.tablaAmortizacionBandera = true
-    }
+    },
+    obtenerFechaProximoPago(fecha) {
+      const anio = fecha.getFullYear()
+      const mes = fecha.getMonth() +1
+      const obtenerDia = fecha.getDate()
+      let diasMes = new Date(anio, mes, 0).getDate()
+      if (obtenerDia >= 15) {
+        return '15-' + mes + '-' + anio
+      } else {
+        let obtenerMes = fecha.getMonth()
+        if(obtenerMes < 0){
+          diasMes = new Date(anio - 1, 11, 0).getDate()
+        } else {
+          diasMes = new Date(anio, obtenerMes , 0).getDate()
+        }
+        return diasMes + '-' + obtenerMes + '-' + anio
+      }
+    },
   }
 }
 </script>

@@ -1,19 +1,6 @@
 <template>
 <div class="menu">
     <v-navigation-drawer v-model="drawer" permanent color="rgb(26 58 103)" dark :style="'min-height: 100 hv;'+'max-height: ' + (maxHeight-100) + 'px'">
-        <v-list-item class="px-2">
-            <v-list-item-avatar>
-                <v-img src="./assets/img/avatar-icon-person-icons.webp"></v-img>
-            </v-list-item-avatar>
-
-            <v-list-item-title>{{ currentUser.info.persona.nombre }}</v-list-item-title>
-        </v-list-item>
-        <v-list-item  style="margin-top: -30px; margin-left: 50px;">
-                <v-list-item-content>
-                    <v-list-item-title><a @click.prevent="cerrarSesion()">Cerrar Sesión</a></v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-        <v-divider></v-divider>
         <v-list dense>
           <v-list-item class="itemList" v-bind:class="[itemActive == 'home' ? 'itemSelect':'']" @click.prevent="selectMenu('home')">
                 <v-list-item-icon>

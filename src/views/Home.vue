@@ -4,10 +4,18 @@
       <div class="col-2">
         <img src="https://portal.cfsoul.com/images/icono_amarillo.png" height="80px">
       </div>
-      <div class="col-10" style="padding-top: 50px;">
-        <center>
-          <span style="color: white; font-size: 38px;"> CAPITAL & FINANCIAL SOUL </span>
-        </center>
+      <div class="col-8" style="padding-top: 50px;">
+            <center>
+              <span style="color: white; font-size: 38px;"> CAPITAL & FINANCIAL SOUL </span>
+            </center>
+        </div>
+        <div class="col-2">
+          <router-link to="/datosPersona">
+            <v-img src="./assets/img/avatar-icon-person-icons.webp" style="width: 25px; float: right;"></v-img>
+            <h3 style="float: right;color: white; padding-left: 5px; padding-right: 5px;">{{ currentUser.info.persona.nombre }}</h3>
+          </router-link>
+          <br/><br/>
+          <span style="float: right;color: white; padding-left: 5px; padding-right: 5px;"><a @click.prevent="cerrarSesion()">Cerrar Sesión</a></span>
       </div>
     </div>
     <div class="row" :style="{ height: maxHeight - 100 + 'px' }">
@@ -64,6 +72,8 @@ export default {
   mounted() {
     if (!this.currentUser) {
       this.$router.push("/login");
+    }else if(this.currentUser.claveEstatusUsuario == 'EST_US_NUEVO'){
+      this.$router.push('/datosPersona')
     }
     if (this.$route.params.menu !== undefined) {
       this.selectMenu = this.$route.params.menu
@@ -78,6 +88,10 @@ export default {
     subSelectCliente(event) {
       this.cliente = event.cliente;
       this.subSelect = event.subSelect;
+    },
+    cerrarSesion() {
+      this.$store.dispatch("auth/logout");
+      this.$router.push("/login");
     }
   }
 };
