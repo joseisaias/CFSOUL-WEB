@@ -123,10 +123,6 @@ export default {
         selectMenu(selectMenu) {
           this.itemActive = selectMenu;
           this.$emit("selectMenu", selectMenu)
-        },
-        cerrarSesion() {
-            this.$store.dispatch("auth/logout");
-            this.$router.push("/login");
         }
     }
 };

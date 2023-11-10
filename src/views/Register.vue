@@ -68,13 +68,13 @@
                         <v-text-field label="Colonia" hide-details="auto" required :rules="validacionGeneral" v-model="domicilio.colonia" ></v-text-field>
                     </div>
                     <div class="col-lg-1">
-                        <v-text-field label="C.P." hide-details="auto" required :rules="validacionGeneral" v-model="domicilio.cp" ></v-text-field>
+                        <v-text-field label="Código Postal" hide-details="auto" required :rules="validacionGeneral" v-model="domicilio.cp" ></v-text-field>
                     </div>
                     <div class="col-lg-3">
                         <v-text-field label="Ciudad" hide-details="auto" required :rules="validacionGeneral" v-model="domicilio.ciudad" ></v-text-field>
                     </div>
                     <div class="col-lg-4">
-                        <v-text-field label="Municipio" hide-details="auto" required :rules="validacionGeneral" v-model="domicilio.municipio" ></v-text-field>
+                        <v-text-field label="Municipio/Alcaldía" hide-details="auto" required :rules="validacionGeneral" v-model="domicilio.municipio" ></v-text-field>
                     </div>
                     <div class="col-lg-4">
                         <v-text-field label="Estado" hide-details="auto" required :rules="validacionGeneral" v-model="domicilio.estado" ></v-text-field>

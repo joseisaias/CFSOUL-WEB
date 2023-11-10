@@ -9,7 +9,7 @@
         <v-text-field v-model="entidadFederativa" label="Entidad Federativa" :disabled="true"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field v-model="municipio" label="Municipio" :disabled="true"></v-text-field>
+        <v-text-field v-model="municipio" label="Municipio/Alcaldía" :disabled="true"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-text-field v-model="domicilio.colonia" label="Colonia" :disabled="deshabilitar"></v-text-field>

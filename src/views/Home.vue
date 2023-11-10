@@ -17,6 +17,20 @@
           <br/><br/>
           <span style="float: right;color: white; padding-left: 5px; padding-right: 5px;"><a @click.prevent="cerrarSesion()">Cerrar Sesión</a></span>
       </div>
+      <div class="col-2">
+      <v-list-item class="px-2" permanent color="rgb(26 58 103)" dark :style="'min-height: 100 hv;'+'max-height: ' + (maxHeight-100) + 'px'">
+            <v-list-item-avatar>
+                <v-img src="./assets/img/avatar-icon-person-icons.webp"></v-img>
+            </v-list-item-avatar>
+            <v-list-item-title>{{ currentUser.info.persona.nombre }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item  style="margin-top: -30px; margin-left: 50px;" permanent color="rgb(26 58 103)" dark :style="'min-height: 100 hv;'+'max-height: ' + (maxHeight-100) + 'px'">
+                <v-list-item-content>
+                    <v-list-item-title><a @click.prevent="cerrarSesion()">Cerrar sesión</a></v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+        <v-divider></v-divider>
+      </div>
     </div>
     <div class="row" :style="{ height: maxHeight - 100 + 'px' }">
       <menuUsuario :maxHeight="maxHeight" @selectMenu="selectMenu = $event; subSelect = ''"></menuUsuario>
