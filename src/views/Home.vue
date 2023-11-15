@@ -6,16 +6,15 @@
       </div>
       <div class="col-8" style="padding-top: 20px;">
             <center>
-              <span style="color: white; font-size: 38px;"> CAPITAL & FINANCIAL SOUL </span>
+              <span style="color: white; font-size: 38px;"> Capital & Financial Soul </span>
             </center>
         </div>
         <div class="col-2" style="padding-right: 15px;">
           <router-link to="/datosPersona">
-            <v-img src="./assets/img/avatar-icon-person-icons.webp" style="width: 25px; float: right;"></v-img>
-            <h3 style="float: right;color: white; padding-left: 5px; padding-right: 5px;">{{ currentUser.info.persona.nombre }}</h3>
+            <v-img src="./assets/img/avatar-icon-person-icons.webp" style="width: 35px; float: left;"></v-img>
+            <h4 style="float: right;color: white; padding-left: 5px; padding-right: 5px;">{{ currentUser.info.persona.nombre }}</h4>
           </router-link>
-          <br/><br/>
-          <span style="float: right;color: white; padding-left: 5px; padding-right: 5px;"><a @click.prevent="cerrarSesion()">Cerrar Sesión</a></span>
+          <span style="float: right;color: white; padding-left: 5px; padding-right: 5px;"><a @click.prevent="cerrarSesion()">Cerrar sesión</a></span>
       </div>
       <!--div class="col-2">
       <v-list-item class="px-2" permanent color="rgb(26 58 103)" dark :style="'min-height: 100 hv;'+'max-height: ' + (maxHeight-100) + 'px'">

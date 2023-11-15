@@ -4,9 +4,9 @@
       <div class="col-2">
         <img src="https://portal.cfsoul.com/images/icono_amarillo.png" height="80px">
       </div>
-      <div class="col-10" style="padding-top: 50px;">
+      <div class="col-10" style="padding-top: 20px;">
         <center>
-          <span style="color: white; font-size: 38px;"> CAPITAL & FINANCIAL SOUL </span>
+          <span style="color: white; font-size: 38px;"> Capital & Financial Soul </span>
         </center>
       </div>
     </div>
