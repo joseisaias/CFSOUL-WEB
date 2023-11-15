@@ -131,11 +131,11 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-select v-model="cliente.idActividad" :items="catActividad" item-value="idCat" item-text="descripcion"
-                    label="Actividad" :disabled="disabledCampos"></v-select>
+                    label="Actividad" :disabled="disabledCampos" @change="selectCatActividad()"></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-select v-model="cliente.idGiro" :items="catGiro" item-value="idCat" item-text="descripcion"
-                    label="Giro" :disabled="disabledCampos"></v-select>
+                    label="Giro" :disabled="catGiro.length == 0 && disabledCampos" ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-select v-model="cliente.idEstablecimiento" :items="catEstablecimiento" item-value="idCat"
@@ -288,11 +288,7 @@ export default {
     }).catch(error => {
       console.error('Error al obtener tipo establecimiento', error)
     });
-    CatGeneralService.getCatSelect(this.$CAT_MAES.TIP_GIRO).then(resp => {
-      this.catGiro = resp.data.body;
-    }).catch(error => {
-      console.error('Error al obtener tipo giro', error)
-    });
+
 
     CatGeneralService.getCatDetalleByClave(this.$CAT_DET.TIP_DOM_COM).then(resp => {
       this.catTipoDomCom = resp.data.body[0]
@@ -308,6 +304,15 @@ export default {
 
   },
   methods: {
+    selectCatActividad(){
+      this.cliente.idGiro = 0;
+      CatGeneralService.getCatSelectIdCatPadre(this.$CAT_MAES.TIP_GIRO, this.cliente.idActividad).then(resp => {
+        this.catGiro = resp.data.body;
+      }).catch(error => {
+        console.error('Error al obtener tipo giro', error)
+      });
+
+    },
     editarCliente(item, disabled) {
       this.cliente = {};
       this.domicilioFiscal = {};

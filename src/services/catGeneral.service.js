@@ -10,6 +10,10 @@ class CatGeneralService {
     return axios.get(API_URL + claveMaestro + '/getCatSelect', { headers: authHeader() })
   }
 
+  getCatSelectIdCatPadre (claveMaestro, idCatPadre) {
+    return axios.get(API_URL + claveMaestro + '/' + idCatPadre + '/getCatSelectIdCatPadre', { headers: authHeader() })
+  }
+
   getCatDomicilioByCp (cp) {
     return axios.get(API_URL + cp + '/getCatDomicilioByCp', { headers: authHeader() })
   }
