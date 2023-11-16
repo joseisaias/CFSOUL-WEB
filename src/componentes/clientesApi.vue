@@ -283,6 +283,11 @@ export default {
     }).catch(error => {
       console.error('Error al obtener tipo actividad', error)
     });
+    CatGeneralService.getCatSelect(this.$CAT_MAES.TIP_GIRO).then(resp => {
+      this.catGiro = resp.data.body;
+    }).catch(error => {
+      console.error('Error al obtener tipo giro', error)
+    });
     CatGeneralService.getCatSelect(this.$CAT_MAES.TIP_ESTAB).then(resp => {
       this.catEstablecimiento = resp.data.body;
     }).catch(error => {
