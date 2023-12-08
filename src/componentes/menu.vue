@@ -26,7 +26,7 @@
                     <v-list-item-title>Estado de Cuenta</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item v-if="showAdmin || showCFSOUL" class="itemList" v-bind:class="[itemActive == 'cliente' ? 'itemSelect':'']" @click.prevent="selectMenu('cliente')">
+            <v-list-item v-if="showAdmin || showCFSOUL || showPROMO" class="itemList" v-bind:class="[itemActive == 'cliente' ? 'itemSelect':'']" @click.prevent="selectMenu('cliente')">
                 <v-list-item-icon>
                     <v-icon>mdi mdi-account-tie</v-icon>
                 </v-list-item-icon>
@@ -105,6 +105,11 @@ export default {
           var rolSelect = this.currentUser.info.rolSelect;
           var rol = this.$ROL.ROL_CFSOUL;
           return rolSelect.claveRol.includes(rol);
+        }        ,
+        showPROMO() {
+          var rolSelect = this.currentUser.info.rolSelect;
+          var rol = this.$ROL.ROL_PROM;
+          return rolSelect.claveRol.includes(rol);
         }
     },
     data() {
@@ -126,6 +131,7 @@ export default {
         }
     }
 };
+
 </script>
 
 <style scoped>

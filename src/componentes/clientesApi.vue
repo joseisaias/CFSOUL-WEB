@@ -8,7 +8,7 @@
           <v-text-field v-model="txtBuscar" append-icon="mdi-magnify" label="Buscar" single-line
             hide-details></v-text-field>
         </v-card-title>
-        <v-btn class="mb-5" color="rgb(27, 85, 158)" dark @click="editarCliente(null, false)">
+        <v-btn v-if="!showPROMO" class="mb-5" color="rgb(27, 85, 158)" dark @click="editarCliente(null, false)">
           Agregar
         </v-btn>
         <v-data-table :headers="headers" :items="desserts" :search="txtBuscar">
@@ -23,19 +23,19 @@
             </v-alert>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
-            <v-btn icon color="rgb(27, 85, 158)" v-if="item.indStatusString == 'Activo'" @click="consultaEmpleados(item)">
+            <v-btn  icon color="rgb(27, 85, 158)" v-if="item.indStatusString == 'Activo' && !showPROMO" @click="consultaEmpleados(item)">
               <v-icon dark> mdi mdi-account-multiple </v-icon>
             </v-btn>
-            <v-btn icon color="rgb(27, 85, 158)" v-if="item.indStatusString == 'Activo'">
+            <v-btn icon color="rgb(27, 85, 158)" v-if="item.indStatusString == 'Activo' && !showPROMO">
               <v-icon dark @click="editarCliente(item, false)"> mdi-file-edit-outline </v-icon>
             </v-btn>
             <v-btn icon color="rgb(27, 85, 158)">
               <v-icon dark @click="editarCliente(item, true)"> mdi-magnify </v-icon>
             </v-btn>
-            <v-btn icon color="red" v-if="item.indStatusString == 'Activo'">
+            <v-btn icon color="red" v-if="item.indStatusString == 'Activo' && !showPROMO">
               <v-icon dark @click="borradoLogico(item)"> mdi-delete </v-icon>
             </v-btn>
-            <v-btn icon color="light-green" v-if="item.indStatusString == 'Inactivo'">
+            <v-btn icon color="light-green" v-if="item.indStatusString == 'Inactivo' && !showPROMO">
               <v-icon dark @click="borradoLogico(item)" > mdi-check-bold </v-icon>
             </v-btn>
           </template>
@@ -246,6 +246,17 @@ export default {
     }
   },
   computed: {
+    currentUser() {
+            const user = this.$store.state.auth.user
+            return user
+        },
+        showPROMO() {
+          var rolSelect = this.currentUser.info.rolSelect;
+          console.log(this.$ROL)
+          var rol = this.$ROL.ROL_PROM;
+          return rolSelect.claveRol.includes(rol);
+        },
+        
     isPersonaFisica() {
       let id = this.cliente.idTipoPersona;
       if (id != undefined && id != null) {

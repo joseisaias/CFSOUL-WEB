@@ -80,7 +80,8 @@ Vue.prototype.$ROL =
   ROLE_ADMIN:'ROLE_ADMIN',
   ROL_EMPL: 'ROL_EMPL',
   ROL_CLIE: 'ROL_CLIE',
-  ROL_CFSOUL: 'ROL_CFSOUL'
+  ROL_CFSOUL: 'ROL_CFSOUL',
+  ROL_PROM: 'ROL_PROM'
 };
 
 Vue.prototype.$EST_US =
