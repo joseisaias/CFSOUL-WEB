@@ -52,6 +52,12 @@
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
             <v-row>
+              <v-col offset="1" cols="4"> CAT </v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px;"> {{ montoCAT | formatoPorcentaje  }}</span>
+              </v-col>
+              <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
+            </v-row>
+            <v-row>
               <v-col offset="1" cols="4"> <span style="font-weight: bold;">Pago Total:</span> </v-col>
               <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ pagoTotal | currency }}</span> </v-col>
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
@@ -104,6 +110,8 @@ export default {
   },
   data() {
     return {
+      montoCAT: 0, // Nueva variable para almacenar el CAT
+      costosAdicionales: 0, // para agregar algun costo adicional al CAT
       tablaAmortizacionDialog: false,
       idPersona: 0,
       periodo: 0,
@@ -213,12 +221,14 @@ export default {
     }
   },
   mounted() {
+    
     if (!this.currentUser) {
       this.$router.push('/login')
     }
     this.cargaInicial()
     this.obtenerTablaCalendario()
     this.obtenMontoMaximo()
+    this.calcularCAT()
   },
   methods: {
     limpiarCotizacion() {
@@ -360,8 +370,35 @@ export default {
         this.montoAux = this.montoMaximo
       }
       this.monto = this.montoAux
-    }
-  }
+      this.calcularCAT() // Llama a calcularCAT cuando el montoAux cambia
+    },
+    calcularTasaEfectivaQuincenal() {
+      const tasaMensual = this.interesAnual / 100 / 24;
+      return Math.pow(1 + tasaMensual, 1 / 2) - 1;
+    },
+    calcularValorPresente() {
+      const tasaQuincenal = this.calcularTasaEfectivaQuincenal();
+      return this.montoAux / Math.pow(1 + tasaQuincenal, 2 * this.periodo);
+    },
+    calcularCAT() {
+      setTimeout(() =>{
+        const valorPresente = this.calcularValorPresente();
+        const totalPagar = valorPresente + this.costosAdicionales;
+        //console.log('interes', valorPresente );
+        //console.log('monto',this.montoAux );
+        this.montoCAT = (totalPagar / this.montoAux) * 100 - 1; // Almacena el resultado en montoCAT
+      },1000);
+    },
+  },
+  watch: {
+    montoAux: function (newMontoAux, oldMontoAux) {
+      // Llama a la función de manejo cuando montoAux cambia
+      this.validaMonto();
+    },
+    periodo: function (newPeriodo, oldPeriodo) {
+      this.validaMonto();
+    },
+  },
 
 }
 </script>

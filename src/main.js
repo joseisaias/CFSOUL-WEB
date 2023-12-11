@@ -74,6 +74,9 @@ Vue.filter('currencyredondeo', function(value) {
   let cambioACero = val - parseInt(lastDigit);
   return "$" + cambioACero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 });
+Vue.filter('formatoPorcentaje', function (value) {
+  return (value).toFixed(2) + '%';
+})
 
 Vue.prototype.$ROL =
 {
