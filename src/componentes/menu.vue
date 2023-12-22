@@ -34,7 +34,7 @@
                     <v-list-item-title>Clientes</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item  v-if="showAdmin" class="itemList" v-bind:class="[itemActive == 'usuario' ? 'itemSelect':'']" @click.prevent="selectMenu('usuario')">
+            <v-list-item  v-if="showAdmin" class="itemList" v-bind:class="[itemActive == 'usuarios' ? 'itemSelect':'']" @click.prevent="selectMenu('usuarios')">
                 <v-list-item-icon>
                     <v-icon>mdi mdi-account-group</v-icon>
                 </v-list-item-icon>
