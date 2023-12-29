@@ -18,8 +18,13 @@ class UsuariosService {
     return axios.get(API_URL + 'getClientes', { headers: authHeader() })
   }
 
-  getClienteById (item) {
-    return axios.post(API_URL + 'getClienteById', item, { headers: authHeader() })
+  getUsuarioById (item) {
+    console.log('ES DE VUE EL SERVICE: ',item);
+    return axios.post(API_URL + 'getUsuarioById', item, { headers: authHeader() })
+  }
+
+  nuevoUsuario (item) {
+    return axios.post(API_URL + 'nuevoUsuario', item, { headers: authHeader() })
   }
 }
 

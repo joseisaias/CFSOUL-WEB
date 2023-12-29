@@ -21,6 +21,10 @@ class CatGeneralService {
   getCatDetalleByClave (clave) {
     return axios.get(API_URL + clave + '/getCatDetalleByClave', { headers: authHeader() })
   }
+
+  getCatRol (claveMaestro) {
+    return axios.get(API_URL + claveMaestro + '/getCatRol', { headers: authHeader() })
+  }
 }
 
 export default new CatGeneralService()
