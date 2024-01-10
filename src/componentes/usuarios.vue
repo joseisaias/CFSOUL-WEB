@@ -11,7 +11,7 @@
             Agregar
           </v-btn>
         </div>
-        <v-data-table :headers="headers" :items="desserts" :search="txtBuscar" :searchable="true">
+        <v-data-table  :headers="headers" :items="desserts" :search="txtBuscar" :searchable="true">
           <template v-slot:no-data>
             <v-alert :value="true">
               no se encontraron registros...
@@ -23,12 +23,20 @@
             </v-alert>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
-            <v-btn icon color="rgb(27, 85, 158)" v-if="item.indStatusString == 'Activo' ">
+            <v-btn icon color="rgb(27, 85, 158)" v-if="item.indStatusString == 'Activo'  && !showPROMO">
               <v-icon dark @click="editarUsuario(item, false)"> mdi-file-edit-outline </v-icon>
             </v-btn>
             <v-btn icon color="rgb(27, 85, 158)">
               <v-icon dark @click="editarUsuario(item, true)"> mdi-magnify </v-icon>
             </v-btn>
+
+            <v-btn icon color="red" v-if="item.indStatusString == 'Activo' && !showPROMO">
+              <v-icon dark @click="borradoLogico(item)"> mdi-delete </v-icon>
+            </v-btn>
+            <v-btn icon color="light-green" v-if="item.indStatusString == 'Inactivo' && !showPROMO">
+              <v-icon dark @click="borradoLogico(item)" > mdi-check-bold </v-icon>
+            </v-btn>
+
           </template>
         </v-data-table>
       </v-card>
@@ -171,6 +179,7 @@
   const $ = require('jquery');
   import CatGeneralService from '@/services/catGeneral.service'
 import UserService from '@/services/usuarios.service'
+
 export default {
   name: 'usuarios',
   components: {
@@ -273,6 +282,7 @@ export default {
                 message: 'Registro guardado exitosamente.'
               });
               this.closeUsuario();
+             // console.log(resp.data.body);
               this.desserts = resp.data.body
             } else {
               this.$toasts.push({
@@ -319,6 +329,27 @@ export default {
         this.editUsuario = true;
       }
     },
+    borradoLogico(item){
+       let usuarioRequest = {
+          cliente: item,
+        }
+      UserService.borradoLogico(usuarioRequest).then(resp => {
+        this.desserts = resp.data.body;
+        
+        this.$forceUpdate(); // Forzar la actualización de la tabla
+        
+         this.$toasts.push({
+            type: 'success',
+            message: 'se ha actualizado el registro.'
+          })
+        }).catch(error => {
+          console.error(error);
+          this.$toasts.push({
+            type: 'error',
+            message: 'Ocurrio un error al borrar el registro.'
+          })
+        })
+    },
     cambioRazonSocial() {
       this.usuario.razonSocial = null;
       this.usuario.nombre = null;
@@ -326,7 +357,17 @@ export default {
       this.usuario.apellidoPaterno = null;
     }
   },
-  computed: {      
+  computed: {  
+    currentUser() {
+        const user = this.$store.state.auth.user
+        return user
+    },
+    showPROMO() {
+      var rolSelect = this.currentUser.info.rolSelect;
+      var rol = this.$ROL.ROL_PROM;
+      return rolSelect.claveRol.includes(rol);
+    },
+
     isPersonaFisica() {
       let id = this.usuario.idTipoPersona;
       if (id != undefined && id != null) {

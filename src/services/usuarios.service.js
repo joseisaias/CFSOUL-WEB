@@ -26,6 +26,10 @@ class UsuariosService {
   nuevoUsuario (item) {
     return axios.post(API_URL + 'nuevoUsuario', item, { headers: authHeader() })
   }
+
+  borradoLogico (item) {
+    return axios.post(API_URL + 'borradoLogico', item, { headers: authHeader() })
+  }
 }
 
 export default new UsuariosService()
