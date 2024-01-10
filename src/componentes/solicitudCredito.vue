@@ -11,6 +11,10 @@
             <v-form ref="form">
               <v-row>
                 <v-col offset="1" cols="10">
+                  <v-text-field label="Ingreso mensual" v-model.number="salario" disabled clearable>
+                  </v-text-field>
+                </v-col>
+                <v-col offset="1" cols="10">
                   <v-text-field label="Monto" v-model.number="montoAux" @blur="validaMonto()" clearable>
                   </v-text-field>
                 </v-col>
@@ -117,6 +121,7 @@ export default {
       periodo: 0,
       monto: 0,
       montoAux: 0,
+      salario: 0,
       interesAnual: 0,
       interesDiario: 0,
       interesApicable: 0,
@@ -227,6 +232,7 @@ export default {
     }
     this.cargaInicial()
     this.obtenerTablaCalendario()
+    this.obtenerSalarioEmpleado()
     this.obtenMontoMaximo()
     this.calcularCAT()
   },
@@ -258,7 +264,7 @@ export default {
       }).catch()
 
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_MAX_PERIODO).then(resp => {
-        this.maxPeriodo = resp.data.body[0].descripcion
+        this.maxPeriodo = (resp.data.body[0].descripcion <= 24) ? resp.data.body[0].descripcion : 24;
       }).catch()
 
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_TASA_INTERES_ANUAL).then(resp => {
@@ -289,12 +295,16 @@ export default {
     obtenMontoMaximo() {
       SolicitudService.obtenerMontoMaximo(this.currentUser.info.empleadoSelect.idEmpleado).then(resp => {
         this.montoMaximo= this.currentUser.info.empleadoSelect.montoMaximoPrestamo - resp.data.body
+       //console.log(resp.data.body);
       }).catch(
         error => {
           this.$toasts.push({ type: 'error', message: 'Ocurrio un error al obtener el monto máximo.' })
           console.log('Ocurrio un error al obtener el monto máximo', error)
         }
       );
+    },
+    obtenerSalarioEmpleado() {
+      this.salario = this.currentUser.info.empleadoSelect.salario;
     },
     guardarSolicitud() {
       this.$confirm(
