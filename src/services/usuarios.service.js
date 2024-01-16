@@ -19,7 +19,6 @@ class UsuariosService {
   }
 
   getUsuarioById (item) {
-    console.log('ES DE VUE EL SERVICE: ',item);
     return axios.post(API_URL + 'getUsuarioById', item, { headers: authHeader() })
   }
 

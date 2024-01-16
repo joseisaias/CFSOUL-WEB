@@ -11,10 +11,6 @@
             <v-form ref="form">
               <v-row>
                 <v-col offset="1" cols="10">
-                  <v-text-field label="Ingreso mensual" v-model.number="salario" disabled clearable>
-                  </v-text-field>
-                </v-col>
-                <v-col offset="1" cols="10">
                   <v-text-field label="Monto" v-model.number="montoAux" @blur="validaMonto()" clearable>
                   </v-text-field>
                 </v-col>
@@ -31,6 +27,13 @@
                     ticks :min="minPeriodo" :max="maxPeriodo"></v-slider>
                 </v-col>
               </v-row>
+            </v-form>
+            <v-row>
+              <v-col offset="1" cols="4" style="font-weight: bold;"> Ingreso mensual </v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px; font-weight: bold;">{{ salario | currencyredondeo }}</span>
+              </v-col>
+              <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
+            </v-row>
             </v-form>
             <v-row>
               <v-col offset="1" cols="4"> Préstamo </v-col>
@@ -62,8 +65,14 @@
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
             <v-row>
+              <v-col offset="1" cols="4"> Comisión por disposición (2.5%)</v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px;"> {{ comision | currency  }}</span>
+              </v-col>
+              <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
+            </v-row>
+            <v-row>
               <v-col offset="1" cols="4"> <span style="font-weight: bold;">Pago Total:</span> </v-col>
-              <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ pagoTotal | currency }}</span> </v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px; font-weight: bold;">{{ pagoTotal | currency }}</span> </v-col>
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
           </v-col>
@@ -106,6 +115,7 @@
 /* eslint-disable */
 import CatGeneralService from '@/services/catGeneral.service'
 import SolicitudService from '@/services/solicitud.service'
+import { Finance } from 'financejs'
 export default {
   components: {
   },
@@ -121,6 +131,7 @@ export default {
       periodo: 0,
       monto: 0,
       montoAux: 0,
+      comision:0,
       salario: 0,
       interesAnual: 0,
       interesDiario: 0,
@@ -160,6 +171,12 @@ export default {
         value: 'pagoInteres'
       },
       {
+        text: 'IVA',
+        align: 'center',
+        sortable: false,
+        value: 'pagoInteres'
+      },
+      {
         text: 'Capital',
         align: 'center',
         sortable: false,
@@ -176,7 +193,9 @@ export default {
   },
   computed: {
     cambiaValorMonto() {
+      //console.log(this.tablaAmortizacion)
       this.montoAux = this.monto
+      this.comision = (this.monto/100)*2.5
       return true
     },
     currentUser() {
@@ -203,8 +222,9 @@ export default {
     },
     tablaAmortizacion() {
       const tbl = []
-      const pagoCapital = this.monto / this.periodo
-      let capitalRestante = this.monto
+      const prestamo = this.monto-this.comision;
+      const pagoCapital = prestamo / this.periodo
+      let capitalRestante = prestamo
       for (let i = 0; i < this.periodo; i++) {
         const capitalRestanteFin = capitalRestante - pagoCapital
         const interes = Number((((this.interesDiario * capitalRestante) * this.calendario[i].totalDias) * this.valorAux / 1).toFixed(3))
@@ -237,6 +257,21 @@ export default {
     this.calcularCAT()
   },
   methods: {
+    
+    calcularTIR() {
+      const finance = new Finance();
+      const prestamo = this.comision-this.monto;
+      const cuota = [prestamo];
+     this.tablaAmortizacion.forEach(element => {
+        cuota.push(element.cuota);
+      });
+     //const cuotab = [-975,193.33,187.51,184.45,179.17,174.45,170.83];
+     //console.log(cuota);
+     //console.log(cuotab);
+      //calculo TIR
+      return finance.IRR(...cuota);
+},
+
     limpiarCotizacion() {
       this.$confirm(
         {
@@ -382,23 +417,14 @@ export default {
       this.monto = this.montoAux
       this.calcularCAT() // Llama a calcularCAT cuando el montoAux cambia
     },
-    calcularTasaEfectivaQuincenal() {
-      const tasaMensual = this.interesAnual / 100 / 24;
-      return Math.pow(1 + tasaMensual, 1 / 2) - 1;
-    },
-    calcularValorPresente() {
-      const tasaQuincenal = this.calcularTasaEfectivaQuincenal();
-      return this.montoAux / Math.pow(1 + tasaQuincenal, 2 * this.periodo);
-    },
+
     calcularCAT() {
       setTimeout(() =>{
-        const valorPresente = this.calcularValorPresente();
-        const totalPagar = valorPresente + this.costosAdicionales;
-        //console.log('interes', valorPresente );
-        //console.log('monto',this.montoAux );
-        this.montoCAT = (totalPagar / this.montoAux) * 100 - 1; // Almacena el resultado en montoCAT
+        const tir = this.calcularTIR();
+        this.montoCAT = (Math.pow(1 + (tir/100), 24) - 1)*100; // Almacena el resultado en montoCAT
       },1000);
     },
+    
   },
   watch: {
     montoAux: function (newMontoAux, oldMontoAux) {
