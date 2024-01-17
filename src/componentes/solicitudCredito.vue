@@ -148,7 +148,7 @@ export default {
       idEstatusAdeudo: 0,
       headerAmortizacion: [{
         text: '# Pago',
-        align: 'start',
+        align: 'center',
         sortable: false,
         value: 'numPago'
       },
@@ -218,7 +218,7 @@ export default {
       this.tablaAmortizacion.forEach(element => {
         montoTotal = montoTotal + element.cuota
       })
-      return montoTotal
+      return montoTotal+this.comision;
     },
     tablaAmortizacion() {
       const tbl = []
