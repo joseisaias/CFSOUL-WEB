@@ -3,9 +3,10 @@
       <v-card >
         <div class="ml-2 mr-2">
           <v-card-title>
-            Usuarios
-            <v-spacer></v-spacer>
-           
+          Usuario
+          <v-spacer></v-spacer>
+          <v-text-field v-model="txtBuscar" append-icon="mdi-magnify" label="Buscar" single-line
+            hide-details></v-text-field>
           </v-card-title>
           <v-btn  class="mb-5" color="rgb(27, 85, 158)" dark   @click="editarUsuario()" >
             Agregar

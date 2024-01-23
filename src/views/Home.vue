@@ -4,16 +4,17 @@
       <div class="col-2">
         <img src="https://portal.cfsoul.com/images/icono_amarillo.png" height="80px">
       </div>
-      <div class="col-8" style="padding-top: 20px;">
+      <div class="col-7" style="padding-top: 20px;">
             <center>
               <span style="color: white; font-size: 38px;"> Capital & Financial Soul </span>
             </center>
         </div>
-        <div class="col-2" style="padding-right: 15px;">
+        <div class="col-3" style="padding-right: 15px;">
           <router-link to="/datosPersona">
-            <v-img src="./assets/img/avatar-icon-person-icons.webp" style="width: 35px; float: left;"></v-img>
+            <v-img src="./assets/img/avatar-icon-person-icons.webp" style="width: 35px; float: left; "></v-img>
             <h4 style="float: right;color: white; padding-left: 5px; padding-right: 5px;">{{ currentUser.info.persona.nombre }}</h4>
           </router-link>
+        <br/><br/>
           <span style="float: right;color: white; padding-left: 5px; padding-right: 5px;"><a @click.prevent="cerrarSesion()">Cerrar sesión</a></span>
       </div>
       <!--div class="col-2">
@@ -34,6 +35,8 @@
     <div class="row" :style="{ height: maxHeight - 100 + 'px' }">
       <menuUsuario :maxHeight="maxHeight" @selectMenu="selectMenu = $event; subSelect = ''"></menuUsuario>
       <div id="content" class="col-5 col-sm-7 col-md-8 col-lg-9 col-xl-10">
+        <video v-if="selectMenu == 'home'" src="https://v.ftcdn.net/07/09/67/89/240_F_709678973_UrwwuwHe646JfyTNJANjE7bYvfWdy8zm_ST.mp4" style="width: 100%; margin-top: 50px;" autoplay="" loop=""
+      playsinline="" muted=""></video>
         <v-card>
           <clientesApi v-if="selectMenu == 'cliente' && subSelect == ''" @subSelect="subSelectCliente($event)">
           </clientesApi>
@@ -70,7 +73,7 @@ const jQuery = require('jquery');
 export default {
   name: 'Home',
   components: { menuUsuario, clientesApi, empleadoCliente, solicitudCredito, seguimientoCliente, conciliacionApp, estadoCuenta, usuarios },
-  computed: {
+    computed: {
     currentUser() {
       const user = this.$store.state.auth.user
       return user

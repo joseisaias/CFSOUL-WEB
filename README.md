@@ -96,3 +96,12 @@ https://es.vuejs.org/v2/cookbook/practical-use-of-scoped-slots.html
 npm install xlsx
 
 https://www.npmjs.com/package/xlsx
+
+### finanzas
+
+npm install financejs
+
+### pdf
+npm install jspdf
+
+

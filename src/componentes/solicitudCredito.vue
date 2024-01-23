@@ -34,7 +34,6 @@
               </v-col>
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
-            </v-form>
             <v-row>
               <v-col offset="1" cols="4"> Préstamo </v-col>
               <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ monto | currencyredondeo }}</span>
@@ -53,7 +52,7 @@
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
             <v-row>
-              <v-col offset="1" cols="4"> Iva </v-col>
+              <v-col offset="1" cols="4"> IVA </v-col>
               <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ (interes * .16) | currency }}</span>
               </v-col>
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
@@ -71,8 +70,14 @@
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
             <v-row>
+              <v-col offset="1" cols="4"> Monto recibido</v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px;"> {{ (monto - comision)| currency  }}</span>
+              </v-col>
+              <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
+            </v-row>
+            <v-row>
               <v-col offset="1" cols="4"> <span style="font-weight: bold;">Pago Total:</span> </v-col>
-              <v-col cols="6"> <span style="float: right; padding-right: 25px; font-weight: bold;">{{ pagoTotal | currency }}</span> </v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px; font-weight: bold;">{{ (pagoTotal + comision) | currency }}</span> </v-col>              
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
           </v-col>
@@ -80,7 +85,7 @@
             <div class="v-card__title" style="padding-bottom: 50px;">
               Tabla de amortización
             </div>
-            <v-data-table height="60vh" fixed-header :headers="headerAmortizacion" :items-per-page="36"
+            <v-data-table height="105vh" fixed-header :headers="headerAmortizacion" :items-per-page="36"
               :server-items-length="36" :hide-default-footer="true" :items="tablaAmortizacion">
               <template v-slot:[`item.saldoInicial`]="{ item }">
                 {{ item.saldoInicial | currency }}
@@ -131,12 +136,12 @@ export default {
       periodo: 0,
       monto: 0,
       montoAux: 0,
-      comision:0,
       salario: 0,
       interesAnual: 0,
       interesDiario: 0,
       interesApicable: 0,
       valorAux: 0,
+      comision:0,
       montoMaximo: 1000,
       montoMinimo: 100,
       stepMonto: 50,
@@ -170,12 +175,12 @@ export default {
         sortable: false,
         value: 'pagoInteres'
       },
-      {
+      /*{
         text: 'IVA',
         align: 'center',
         sortable: false,
         value: 'pagoInteres'
-      },
+      },*/
       {
         text: 'Capital',
         align: 'center',
@@ -193,7 +198,6 @@ export default {
   },
   computed: {
     cambiaValorMonto() {
-      //console.log(this.tablaAmortizacion)
       this.montoAux = this.monto
       this.comision = (this.monto/100)*2.5
       return true
@@ -218,7 +222,7 @@ export default {
       this.tablaAmortizacion.forEach(element => {
         montoTotal = montoTotal + element.cuota
       })
-      return montoTotal+this.comision;
+      return montoTotal
     },
     tablaAmortizacion() {
       const tbl = []
@@ -246,7 +250,7 @@ export default {
     }
   },
   mounted() {
-    
+
     if (!this.currentUser) {
       this.$router.push('/login')
     }
@@ -257,7 +261,17 @@ export default {
     this.calcularCAT()
   },
   methods: {
-    
+    calcularMontoMinimo(){
+      const valor = this.currentUser.info.empleadoSelect.montominimoPrestamo
+      if(this.currentUser.info.empleadoSelect.porcentajeMontoMinPrestamo) {
+        this.montoMinimo = (valor / 100) * this.montoMaximo
+      } else {
+        this.montoMinimo = valor;
+      }
+      this.monto = this.montoMinimo
+      this.montoAux = this.montoMinimo
+    },
+       
     calcularTIR() {
       const finance = new Finance();
       const prestamo = this.comision-this.monto;
@@ -270,7 +284,7 @@ export default {
      //console.log(cuotab);
       //calculo TIR
       return finance.IRR(...cuota);
-},
+      },
 
     limpiarCotizacion() {
       this.$confirm(
@@ -283,11 +297,11 @@ export default {
     },
     cargaInicial() {
 
-      CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_MONTO_MIN).then(resp => {
+      /*CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_MONTO_MIN).then(resp => {
         this.montoMinimo = resp.data.body[0].descripcion
         this.monto = this.montoMinimo
         this.montoAux = this.montoMinimo
-      }).catch()
+      }).catch()*/
 
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_STEP_MONTO).then(resp => {
         this.stepMonto = resp.data.body[0].descripcion
@@ -330,7 +344,8 @@ export default {
     obtenMontoMaximo() {
       SolicitudService.obtenerMontoMaximo(this.currentUser.info.empleadoSelect.idEmpleado).then(resp => {
         this.montoMaximo= this.currentUser.info.empleadoSelect.montoMaximoPrestamo - resp.data.body
-       //console.log(resp.data.body);
+        //console.log(resp.data.body);
+        this.calcularMontoMinimo()
       }).catch(
         error => {
           this.$toasts.push({ type: 'error', message: 'Ocurrio un error al obtener el monto máximo.' })
@@ -417,14 +432,13 @@ export default {
       this.monto = this.montoAux
       this.calcularCAT() // Llama a calcularCAT cuando el montoAux cambia
     },
-
+    
     calcularCAT() {
       setTimeout(() =>{
         const tir = this.calcularTIR();
         this.montoCAT = (Math.pow(1 + (tir/100), 24) - 1)*100; // Almacena el resultado en montoCAT
       },1000);
     },
-    
   },
   watch: {
     montoAux: function (newMontoAux, oldMontoAux) {
