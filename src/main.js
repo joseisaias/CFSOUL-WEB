@@ -12,6 +12,7 @@ import Vuex from 'vuex'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import { library } from '@fortawesome/fontawesome-svg-core'
+import { Finance } from 'financejs'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
   faHome,

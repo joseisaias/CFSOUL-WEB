@@ -29,6 +29,12 @@
               </v-row>
             </v-form>
             <v-row>
+              <v-col offset="1" cols="4" style="font-weight: bold;"> Ingreso mensual </v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px; font-weight: bold;">{{ salario | currencyredondeo }}</span>
+              </v-col>
+              <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
+            </v-row>
+            <v-row>
               <v-col offset="1" cols="4"> Préstamo </v-col>
               <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ monto | currencyredondeo }}</span>
               </v-col>
@@ -46,7 +52,7 @@
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
             <v-row>
-              <v-col offset="1" cols="4"> Iva </v-col>
+              <v-col offset="1" cols="4"> IVA </v-col>
               <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ (interes * .16) | currency }}</span>
               </v-col>
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
@@ -58,8 +64,20 @@
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
             <v-row>
+              <v-col offset="1" cols="4"> Comisión por disposición (2.5%)</v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px;"> {{ comision | currency  }}</span>
+              </v-col>
+              <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
+            </v-row>
+            <v-row>
+              <v-col offset="1" cols="4"> Monto recibido</v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px;"> {{ (monto - comision)| currency  }}</span>
+              </v-col>
+              <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
+            </v-row>
+            <v-row>
               <v-col offset="1" cols="4"> <span style="font-weight: bold;">Pago Total:</span> </v-col>
-              <v-col cols="6"> <span style="float: right; padding-right: 25px;">{{ pagoTotal | currency }}</span> </v-col>
+              <v-col cols="6"> <span style="float: right; padding-right: 25px; font-weight: bold;">{{ (pagoTotal + comision) | currency }}</span> </v-col>              
               <v-col offset="1" cols="10"> <v-spacer class="lineTabla"></v-spacer> </v-col>
             </v-row>
           </v-col>
@@ -67,7 +85,7 @@
             <div class="v-card__title" style="padding-bottom: 50px;">
               Tabla de amortización
             </div>
-            <v-data-table height="60vh" fixed-header :headers="headerAmortizacion" :items-per-page="36"
+            <v-data-table height="105vh" fixed-header :headers="headerAmortizacion" :items-per-page="36"
               :server-items-length="36" :hide-default-footer="true" :items="tablaAmortizacion">
               <template v-slot:[`item.saldoInicial`]="{ item }">
                 {{ item.saldoInicial | currency }}
@@ -102,6 +120,7 @@
 /* eslint-disable */
 import CatGeneralService from '@/services/catGeneral.service'
 import SolicitudService from '@/services/solicitud.service'
+import { Finance } from 'financejs'
 export default {
   components: {
   },
@@ -117,10 +136,12 @@ export default {
       periodo: 0,
       monto: 0,
       montoAux: 0,
+      salario: 0,
       interesAnual: 0,
       interesDiario: 0,
       interesApicable: 0,
       valorAux: 0,
+      comision:0,
       montoMaximo: 1000,
       montoMinimo: 100,
       stepMonto: 50,
@@ -132,7 +153,7 @@ export default {
       idEstatusAdeudo: 0,
       headerAmortizacion: [{
         text: '# Pago',
-        align: 'start',
+        align: 'center',
         sortable: false,
         value: 'numPago'
       },
@@ -154,6 +175,12 @@ export default {
         sortable: false,
         value: 'pagoInteres'
       },
+      /*{
+        text: 'IVA',
+        align: 'center',
+        sortable: false,
+        value: 'pagoInteres'
+      },*/
       {
         text: 'Capital',
         align: 'center',
@@ -172,6 +199,7 @@ export default {
   computed: {
     cambiaValorMonto() {
       this.montoAux = this.monto
+      this.comision = (this.monto/100)*2.5
       return true
     },
     currentUser() {
@@ -198,8 +226,9 @@ export default {
     },
     tablaAmortizacion() {
       const tbl = []
-      const pagoCapital = this.monto / this.periodo
-      let capitalRestante = this.monto
+      const prestamo = this.monto-this.comision;
+      const pagoCapital = prestamo / this.periodo
+      let capitalRestante = prestamo
       for (let i = 0; i < this.periodo; i++) {
         const capitalRestanteFin = capitalRestante - pagoCapital
         const interes = Number((((this.interesDiario * capitalRestante) * this.calendario[i].totalDias) * this.valorAux / 1).toFixed(3))
@@ -221,16 +250,42 @@ export default {
     }
   },
   mounted() {
-    
+
     if (!this.currentUser) {
       this.$router.push('/login')
     }
     this.cargaInicial()
     this.obtenerTablaCalendario()
+    this.obtenerSalarioEmpleado()
     this.obtenMontoMaximo()
     this.calcularCAT()
   },
   methods: {
+    calcularMontoMinimo(){
+      const valor = this.currentUser.info.empleadoSelect.montominimoPrestamo
+      if(this.currentUser.info.empleadoSelect.porcentajeMontoMinPrestamo) {
+        this.montoMinimo = (valor / 100) * this.montoMaximo
+      } else {
+        this.montoMinimo = valor;
+      }
+      this.monto = this.montoMinimo
+      this.montoAux = this.montoMinimo
+    },
+       
+    calcularTIR() {
+      const finance = new Finance();
+      const prestamo = this.comision-this.monto;
+      const cuota = [prestamo];
+     this.tablaAmortizacion.forEach(element => {
+        cuota.push(element.cuota);
+      });
+     //const cuotab = [-975,193.33,187.51,184.45,179.17,174.45,170.83];
+     //console.log(cuota);
+     //console.log(cuotab);
+      //calculo TIR
+      return finance.IRR(...cuota);
+      },
+
     limpiarCotizacion() {
       this.$confirm(
         {
@@ -242,11 +297,11 @@ export default {
     },
     cargaInicial() {
 
-      CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_MONTO_MIN).then(resp => {
+      /*CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_MONTO_MIN).then(resp => {
         this.montoMinimo = resp.data.body[0].descripcion
         this.monto = this.montoMinimo
         this.montoAux = this.montoMinimo
-      }).catch()
+      }).catch()*/
 
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_STEP_MONTO).then(resp => {
         this.stepMonto = resp.data.body[0].descripcion
@@ -258,7 +313,7 @@ export default {
       }).catch()
 
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_CREDITO_MAX_PERIODO).then(resp => {
-        this.maxPeriodo = resp.data.body[0].descripcion
+        this.maxPeriodo = (resp.data.body[0].descripcion <= 24) ? resp.data.body[0].descripcion : 24;
       }).catch()
 
       CatGeneralService.getCatDetalleByClave(this.$CAT_DET.VAR_TASA_INTERES_ANUAL).then(resp => {
@@ -289,12 +344,17 @@ export default {
     obtenMontoMaximo() {
       SolicitudService.obtenerMontoMaximo(this.currentUser.info.empleadoSelect.idEmpleado).then(resp => {
         this.montoMaximo= this.currentUser.info.empleadoSelect.montoMaximoPrestamo - resp.data.body
+        //console.log(resp.data.body);
+        this.calcularMontoMinimo()
       }).catch(
         error => {
           this.$toasts.push({ type: 'error', message: 'Ocurrio un error al obtener el monto máximo.' })
           console.log('Ocurrio un error al obtener el monto máximo', error)
         }
       );
+    },
+    obtenerSalarioEmpleado() {
+      this.salario = this.currentUser.info.empleadoSelect.salario;
     },
     guardarSolicitud() {
       this.$confirm(
@@ -372,21 +432,11 @@ export default {
       this.monto = this.montoAux
       this.calcularCAT() // Llama a calcularCAT cuando el montoAux cambia
     },
-    calcularTasaEfectivaQuincenal() {
-      const tasaMensual = this.interesAnual / 100 / 24;
-      return Math.pow(1 + tasaMensual, 1 / 2) - 1;
-    },
-    calcularValorPresente() {
-      const tasaQuincenal = this.calcularTasaEfectivaQuincenal();
-      return this.montoAux / Math.pow(1 + tasaQuincenal, 2 * this.periodo);
-    },
+    
     calcularCAT() {
       setTimeout(() =>{
-        const valorPresente = this.calcularValorPresente();
-        const totalPagar = valorPresente + this.costosAdicionales;
-        //console.log('interes', valorPresente );
-        //console.log('monto',this.montoAux );
-        this.montoCAT = (totalPagar / this.montoAux) * 100 - 1; // Almacena el resultado en montoCAT
+        const tir = this.calcularTIR();
+        this.montoCAT = (Math.pow(1 + (tir/100), 24) - 1)*100; // Almacena el resultado en montoCAT
       },1000);
     },
   },

@@ -105,7 +105,7 @@ export default {
           var rolSelect = this.currentUser.info.rolSelect;
           var rol = this.$ROL.ROL_CFSOUL;
           return rolSelect.claveRol.includes(rol);
-        }        ,
+        },
         showPROMO() {
           var rolSelect = this.currentUser.info.rolSelect;
           var rol = this.$ROL.ROL_PROM;

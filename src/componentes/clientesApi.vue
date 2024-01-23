@@ -153,6 +153,19 @@
                     :disabled="disabledCampos"></v-text-field>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-radio-group v-model="cliente.isPorcMinPrestamo" row >
+                    <v-radio label="Porcentaje" value="1"></v-radio>
+                    <v-radio label="Precio" value="0"></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="cliente.montoMinimoPrestamo" :prepend-icon="cliente.isPorcMinPrestamo==1?'mdi mdi-percent':'mdi mdi-currency-usd'"
+                  label="Mínimo prestamo" counter maxlength="10" :rules="montoMinimoRuler"
+                    :disabled="disabledCampos"></v-text-field>
+                </v-col>
+              </v-row>
               <br />
               <v-divider></v-divider>
               <br />
@@ -243,6 +256,7 @@ export default {
       correoRule: [v => !!v || 'El campo es requerido.', v => /.+@.+\..+/.test(v) || 'El campo no corresponde a un correo electronico'],
       isRequeridoRule: [v => !!v || 'El campo es requerido.'],
       telefonoRule: [v => !!v || 'El campo es requerido.', v => Number(v) > 0 || 'El campo es numérico', v => (v && v.length == 10) || 'El campo debe tener 10 digitos.'],
+      montoMinimoRuler: [v => !!v || 'El campo es requerido.', v => Number(v) > 0 || 'El campo es numérico'],
     }
   },
   computed: {
@@ -256,7 +270,7 @@ export default {
           var rol = this.$ROL.ROL_PROM;
           return rolSelect.claveRol.includes(rol);
         },
-        
+
     isPersonaFisica() {
       let id = this.cliente.idTipoPersona;
       if (id != undefined && id != null) {

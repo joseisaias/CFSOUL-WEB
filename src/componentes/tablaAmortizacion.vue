@@ -40,7 +40,7 @@ export default {
       headerAmortizacion: [
         {
           text: '# Pago',
-          align: 'start',
+          align: 'center',
           sortable: false,
           value: 'numPago'
         },
