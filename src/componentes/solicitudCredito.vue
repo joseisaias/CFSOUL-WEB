@@ -93,8 +93,8 @@
               <template v-slot:[`item.cuota`]="{ item }">
                 {{ item.cuota | currency }}
               </template>
-              <template v-slot:[`item.pagoInteres`]="{ item }">
-                {{ item.pagoInteres | currency }}
+              <template v-slot:[`item.pagoInteresSinIva`]="{ item }">
+                {{ item.pagoInteresSinIva | currency }}
               </template>
               <template v-slot:[`item.pagoIva`]="{ item }">
                 {{ item.pagoIva | currency }}
@@ -176,7 +176,7 @@ export default {
         text: 'Interés',
         align: 'center',
         sortable: false,
-        value: 'pagoInteres'
+        value: 'pagoInteresSinIva'
       },
       {
         text: 'IVA',
@@ -234,9 +234,9 @@ export default {
       let capitalRestante = prestamo
       for (let i = 0; i < this.periodo; i++) {
         const capitalRestanteFin = capitalRestante - pagoCapital
-        let interes = Number((((this.interesDiario * capitalRestante) * this.calendario[i].totalDias) * this.valorAux / 1).toFixed(3))
+        const interes = Number((((this.interesDiario * capitalRestante) * this.calendario[i].totalDias) * this.valorAux / 1).toFixed(3))
         const iva = (interes > 0)? Number( (interes*0.16).toFixed(3) ):0;
-        interes = Number( (interes - (interes*0.16) ).toFixed(3) );
+        const interesSinIva = Number( (interes - (interes*0.16) ).toFixed(3) );
 
         const obj = {
           numPago: i + 1,
@@ -244,6 +244,7 @@ export default {
           fechaPago: this.calendario[i].fecha,
           pagoCapital: pagoCapital,
           pagoInteres: interes,
+          pagoInteresSinIva: interesSinIva,
           pagoIva: iva,
           saldoFinal: capitalRestanteFin,
           saldoInicial: capitalRestante,
