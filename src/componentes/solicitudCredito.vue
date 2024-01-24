@@ -96,6 +96,9 @@
               <template v-slot:[`item.pagoInteres`]="{ item }">
                 {{ item.pagoInteres | currency }}
               </template>
+              <template v-slot:[`item.pagoIva`]="{ item }">
+                {{ item.pagoIva | currency }}
+              </template>
               <template v-slot:[`item.pagoCapital`]="{ item }">
                 {{ item.pagoCapital | currency }}
               </template>
@@ -175,12 +178,12 @@ export default {
         sortable: false,
         value: 'pagoInteres'
       },
-      /*{
+      {
         text: 'IVA',
         align: 'center',
         sortable: false,
-        value: 'pagoInteres'
-      },*/
+        value: 'pagoIva'
+      },
       {
         text: 'Capital',
         align: 'center',
@@ -231,13 +234,17 @@ export default {
       let capitalRestante = prestamo
       for (let i = 0; i < this.periodo; i++) {
         const capitalRestanteFin = capitalRestante - pagoCapital
-        const interes = Number((((this.interesDiario * capitalRestante) * this.calendario[i].totalDias) * this.valorAux / 1).toFixed(3))
+        let interes = Number((((this.interesDiario * capitalRestante) * this.calendario[i].totalDias) * this.valorAux / 1).toFixed(3))
+        const iva = (interes > 0)? Number( (interes*0.16).toFixed(3) ):0;
+        interes = Number( (interes - (interes*0.16) ).toFixed(3) );
+
         const obj = {
           numPago: i + 1,
           totalDias: this.calendario[i].totalDias,
           fechaPago: this.calendario[i].fecha,
           pagoCapital: pagoCapital,
           pagoInteres: interes,
+          pagoIva: iva,
           saldoFinal: capitalRestanteFin,
           saldoInicial: capitalRestante,
           idEstatusPago: this.idEstatusPorPagar
