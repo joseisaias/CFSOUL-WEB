@@ -95,7 +95,7 @@
               </template>
               <template v-slot:[`item.pagoInteresSinIva`]="{ item }">
                 {{ item.pagoInteresSinIva | currency }}
-              </template>
+              </template> 
               <template v-slot:[`item.pagoIva`]="{ item }">
                 {{ item.pagoIva | currency }}
               </template>
